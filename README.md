@@ -6,7 +6,7 @@ If you use Source Filmmaker and already have it installed, skip to step 2.
 1. Install Source Filmmaker, move the Source Filmmaker hl2 folder in that installation to somewhere on your computer and then you can uninstall it
 2. Install Alien Swarm
 3. Download this project to some place on your hard drive
-4. Change "CHANGE THIS" in PROJECT_DIR_HERE/game/ep3/gameinfo.txt to wherever that hl2 folder is (if you have Source Filmmaker and have not moved the hl2 folder, change it to the path of the one you have installed)
+4. Change "E:\valve_asw_content\hl2" in (wherever you installed it)/game/ep3/gameinfo.txt to wherever that hl2 folder is (if you have Source Filmmaker and have not moved the hl2 folder, change it to the path of the one you have installed)
 5. If you have not installed Alien Swarm to C:\Program Files (x86)\Steam\steamapps\common\Alien Swarm\, modify run_client to point to the correct directory
 6. Run the game via run_client.bat
 

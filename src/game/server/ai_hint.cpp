@@ -1660,6 +1660,14 @@ hinttypedescs_t g_pszHintDescriptions[] =
 
 	{	HINT_CSTRIKE_HOSTAGE_ESCAPE, "CS Port: Hostage Escape"	},
 
+	//EP3 hints
+	{ HINT_EP3_BLOB_SHAKE_POSITION, "EP3: Blob Shake Position"},
+	{ HINT_EP3_BLOB_FIRE_COVER_POSITION, "EP3: Blob Fire Cover Position"},
+	{ HINT_EP3_BLOB_BRAIN_COVER_POSITION, "EP3: Blob Brain Cover Position"},
+	{ HINT_EP3_BLOB_BRAIN_REGENERATE_POSITION, "EP3: Blob Brain Regenerate Position"},
+	{ HINT_EP3_BLOB_SPIT_POSITION, "EP3: Blob SPit Position"},
+	{ HINT_EP3_BLOB_SPAWN_REGENERATOR_POSITION, "EP3: Blob Spawn Regenerator Position"},
+
 
 };
 

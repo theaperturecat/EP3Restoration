@@ -361,6 +361,8 @@ protected:
 
 	void FlechetteTouch( CBaseEntity *pOther );
 
+	virtual int	GetWeaponizerMaterialType(void) { return WEAPONIZER_MATERIAL_TYPE_CONCRETE; };
+
 	Vector m_vecShootPosition;
 	EHANDLE m_hSeekTarget;
 	bool m_bThrownBack;

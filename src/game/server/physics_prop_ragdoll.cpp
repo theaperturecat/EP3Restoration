@@ -1721,3 +1721,47 @@ void Ragdoll_GetAngleOverrideString( char *pOut, int size, CBaseEntity *pEntity 
 		pRagdoll->GetAngleOverrideFromCurrentState( pOut, size );
 	}
 }
+
+
+
+int CRagdollProp::GetWeaponizerMaterialType()
+{
+	if (!GetModelPtr())
+		return WEAPONIZER_MATERIAL_TYPE_CONCRETE;
+
+	int surfaceProp = physprops->GetSurfaceIndex(GetModelPtr()->pszSurfaceProp());
+	surfacedata_t* psurf = physprops->GetSurfaceData(surfaceProp);
+
+	if (!psurf)
+		return WEAPONIZER_MATERIAL_TYPE_NONE;
+
+#define CHAR_TEX_CONCRETE	'C'
+#define CHAR_TEX_METAL		'M'
+#define CHAR_TEX_DIRT		'D'
+#define CHAR_TEX_VENT		'V'
+#define CHAR_TEX_GRATE		'G'
+#define CHAR_TEX_TILE		'T'
+#define CHAR_TEX_SLOSH		'S'
+#define CHAR_TEX_WOOD		'W'
+#define CHAR_TEX_COMPUTER		'P'
+#define CHAR_TEX_GLASS		'Y'
+#define CHAR_TEX_FLESH		'F'
+#define CHAR_TEX_BLOODYFLESH	'B'
+#define CHAR_TEX_CLIP		'I'
+#define CHAR_TEX_ANTLION		'A'
+#define CHAR_TEX_ALIENFLESH	'H'
+#define CHAR_TEX_FOLIAGE		'O'
+#define CHAR_TEX_SAND		'N'
+#define CHAR_TEX_PLASTIC		'L'
+#define CHAR_TEX_WARPSHIELD	'Z' ///< wierd-looking jello effect for advisor shield.
+#define CHAR_TEX_EGGSHELL		'E'	
+
+	if ((psurf->game.material == 'F') ||
+		(psurf->game.material == 'B') ||
+		(psurf->game.material == 'A') ||
+		(psurf->game.material == 'H') ||
+		(psurf->game.material == 'O'))
+		return WEAPONIZER_MATERIAL_TYPE_NONE;
+
+	return WEAPONIZER_MATERIAL_TYPE_CONCRETE;
+}

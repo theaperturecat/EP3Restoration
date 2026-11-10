@@ -1,0 +1,29 @@
+"Blob"
+{
+	"$basetexture"		"models/blob/blob_inner_material"
+	"$normalmap"		"dev/flat_normal"
+	"$specmasktexture"	"models/blob/blob_specmask"
+	"$lightwarptexture" 	"models/blob/blob_lightwarp"
+	"$fresnelwarptexture" 	"models/blob/blob_fresnelwarp"
+
+	"$uvscale"		"0.02"
+
+	"$envmap" 		"Env_cubemap"
+
+	"$pulse"		"1"
+
+	"$phongboost"		"1"
+	"$phongexponent"	"48"
+	"$rimlightboost"	"1"
+	"$rimlightexponent"	"48"
+
+	"$selfillumfresnel"	"1"
+	"$selfillumfresnelminmaxexp"	"[.5 1 1]"
+	"$selfillumtint"		"[0.7 0.5 0.45]"
+
+	"$glowscale"		".25"
+
+	"$basecolortint"	"[4.5 1.5 1.0]"
+
+	"$surfaceprop"		"flesh"
+}

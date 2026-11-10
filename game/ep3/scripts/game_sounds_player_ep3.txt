@@ -1,0 +1,8 @@
+"HL2Player.FastMoveWind"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"0.9"
+	"soundlevel"		"SNDLVL_75dB"
+	"pitch"			"140"
+	"wave"			"player/player_fastmove_wind.wav"
+}

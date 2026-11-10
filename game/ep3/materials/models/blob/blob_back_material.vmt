@@ -1,0 +1,21 @@
+"Blob"
+{
+	"$basetexture" "models/blob/blob"
+	"$normalmap" 	"models/blob/blob_normal"
+	"$specmasktexture"	"models/blob/blob_specmask"
+
+	"$backsurface"		"1"
+
+	"$nocull"		"1"
+
+	"$diffusescale"		"1"
+
+	"$phongboost"		"1"
+	"$phongexponent"	"48"
+	"$rimlightboost"	"1"
+	"$rimlightexponent"	"48"
+
+	"$envmap" "Env_cubemap"
+
+	"$surfaceprop"		"flesh"
+}

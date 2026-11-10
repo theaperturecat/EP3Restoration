@@ -25,6 +25,10 @@
 #include "branchingsingleton.h"
 #include "bittools.h"
 
+#ifdef HL2_EP3
+#include "weaponizer_shared.h"
+#endif
+
 class CDamageModifier;
 
 struct CSoundParameters;
@@ -800,6 +804,11 @@ public:
 	const char *GetContextValue( int index ) const; 	// note: context may be expired
 	inline const ResponseContext_t	*GetContextData( int index ) const; // note: context may be expired
 	void		ClearAllContexts( void );
+
+	virtual int GetWeaponizerMaterialType()
+	{
+		return WEAPONIZER_MATERIAL_TYPE_NONE;
+	}
 
 protected:
 	CUtlVector< ResponseContext_t > m_ResponseContexts;

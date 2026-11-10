@@ -1,0 +1,155 @@
+blob_physics_parameter_states
+{
+	default
+	{
+		"state_id"				"0"
+
+		"global_viscosity"			"1"
+
+		"neighbor_viscosity"			"1"
+		"neighbor_dist_scale"			"0.5"
+		"neighbor_dist_touch"			"3.1"
+		"neighbor_dist_near"			"3.75"
+		"neighbor_dist_bond_strain"		"3.95"
+		"neighbor_dist_bond_break"		"4.05"
+		"neighbor_dist_max"			"4.05" // Computes the distance at which particles care about neighbor particles
+
+		"neighbor_attraction_max"		"1"
+		"neighbor_repulsion_max"		"1"
+		"neighbor_lj_surface_tension"		"5"
+		"neighbor_lj_attraction"		"0.1"
+		"neighbor_lj_repulsion"			"0.1"
+		"neighbor_linear_attraction"		"1"
+		"neighbor_linear_repulsion"		"1"
+
+		"pgoal_attraction_max"			"1"
+		"pgoal_repulsion_max"			"1"
+		"pgoal_lj_surface_tension"		"5"
+		"pgoal_lj_attraction"			"0.1"
+		"pgoal_lj_repulsion"			"0.1"
+		"pgoal_linear_attraction"		"1"
+		"pgoal_linear_repulsion"		"1"
+
+		"max_speed_towards_goal"		"80"
+		"time_to_max_speed_towards_goal"	"0.15"
+		"force_towards_goal_convergence"	"0.01"
+		"towards_goal_brake_time"		"0.5"
+
+		"sticky_force_for_root_particles"	"1000"
+		"sticky_force_for_core_particles"	"1000"
+		"sticky_force_for_sticky_particles"	"1000"
+		"sticky_force_for_skin_particles"	"1000"
+		"sticky_force_for_tentacle_particles"	"1000"
+
+		"brain_neighbor_viscosity"		"1"
+		"brain_attraction_max"			"1"
+		"brain_repulsion_max"			"1"
+		"brain_lj_surface_tension"		"5"
+		"brain_lj_attraction"			"0.1"
+		"brain_lj_repulsion"			"0.1"
+		"brain_linear_attraction"		"1"
+		"brain_linear_repulsion"		"1"
+	}
+
+	wall_crawl
+	{
+		"state_id"				"1"
+
+		"global_viscosity"			"1"
+
+		"neighbor_viscosity"			"1"
+		"neighbor_dist_scale"			"0.5"
+		"neighbor_dist_touch"			"3.1"
+		"neighbor_dist_near"			"3.75"
+		"neighbor_dist_bond_strain"		"3.95"
+		"neighbor_dist_bond_break"		"4.05"
+		"neighbor_dist_max"			"24.05"
+
+		"neighbor_attraction_max"		"1"
+		"neighbor_repulsion_max"		"1"
+		"neighbor_lj_surface_tension"		"5"
+		"neighbor_lj_attraction"		"0.1"
+		"neighbor_lj_repulsion"			"0.1"
+		"neighbor_linear_attraction"		"1"
+		"neighbor_linear_repulsion"		"1"
+
+		"pgoal_attraction_max"			"1"
+		"pgoal_repulsion_max"			"1"
+		"pgoal_lj_surface_tension"		"5"
+		"pgoal_lj_attraction"			"0.1"
+		"pgoal_lj_repulsion"			"0.1"
+		"pgoal_linear_attraction"		"1"
+		"pgoal_linear_repulsion"		"1"
+
+		"max_speed_towards_goal"		"64"
+		"time_to_max_speed_towards_goal"	"0.35"
+		"force_towards_goal_convergence"	"0.01" // 'Convergence' is the degree to which all particles in the group should move like the root particle
+		"towards_goal_brake_time"		"0.5"
+
+		"sticky_force_for_root_particles"	"1000"
+		"sticky_force_for_core_particles"	"1000"
+		"sticky_force_for_sticky_particles"	"1000"
+		"sticky_force_for_skin_particles"	"1000"
+		"sticky_force_for_tentacle_particles"	"1000"
+
+		"brain_neighbor_viscosity"		"1"
+		"brain_attraction_max"			"1"
+		"brain_repulsion_max"			"1"
+		"brain_lj_surface_tension"		"5"
+		"brain_lj_attraction"			"0.1"
+		"brain_lj_repulsion"			"0.1"
+		"brain_linear_attraction"		"1"
+		"brain_linear_repulsion"		"1"
+	}
+
+	spit_buildup
+	{
+		"state_id"				"2"
+
+		"global_viscosity"			"1"
+
+		"neighbor_viscosity"			"1"
+		"neighbor_dist_scale"			"0.5"
+		"neighbor_dist_touch"			"3.1"
+		"neighbor_dist_near"			"3.75"
+		"neighbor_dist_bond_strain"		"3.95"
+		"neighbor_dist_bond_break"		"4.05"
+		"neighbor_dist_max"			"4.05" // Computes the distance at which particles care about neighbor particles
+
+		"neighbor_attraction_max"		"1"
+		"neighbor_repulsion_max"		"1"
+		"neighbor_lj_surface_tension"		"5"
+		"neighbor_lj_attraction"		"0.1"
+		"neighbor_lj_repulsion"			"0.1"
+		"neighbor_linear_attraction"		"1"
+		"neighbor_linear_repulsion"		"1"
+
+		"pgoal_attraction_max"			"1"
+		"pgoal_repulsion_max"			"1"
+		"pgoal_lj_surface_tension"		"5"
+		"pgoal_lj_attraction"			"0.1"
+		"pgoal_lj_repulsion"			"0.1"
+		"pgoal_linear_attraction"		"1"
+		"pgoal_linear_repulsion"		"1"
+
+		"max_speed_towards_goal"		"80"
+		"time_to_max_speed_towards_goal"	"0.15"
+		"force_towards_goal_convergence"	"0.01"
+		"towards_goal_brake_time"		"0.5"
+
+		"sticky_force_for_root_particles"	"1000"
+		"sticky_force_for_core_particles"	"1000"
+		"sticky_force_for_sticky_particles"	"1000"
+		"sticky_force_for_skin_particles"	"1000"
+		"sticky_force_for_tentacle_particles"	"1000"
+
+		"brain_neighbor_viscosity"		"1"
+		"brain_attraction_max"			"1"
+		"brain_repulsion_max"			"1"
+		"brain_lj_surface_tension"		"5"
+		"brain_lj_attraction"			"0.1"
+		"brain_lj_repulsion"			"0.1"
+		"brain_linear_attraction"		"1"
+		"brain_linear_repulsion"		"1"
+	}
+}

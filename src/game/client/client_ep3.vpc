@@ -13,8 +13,8 @@ $Configuration
 {
 	$Compiler
 	{
-		$AdditionalIncludeDirectories	".\hl2;.\hl2\gameui\;.\hl2\elements;.\ep3;.\episodic;$SRCDIR\game\shared\hl2;$SRCDIR\game\shared\episodic;$SRCDIR\game\shared\ep3;$BASE"
-		$PreprocessorDefinitions		"$BASE;HL2_CLIENT_DLL;HL2_EPISODIC;USE_BLOBULATOR;HL2_EP3;GAMEUI_EMBEDDED;GAMEUI_EXPORTS"
+		$AdditionalIncludeDirectories	".\hl2;.\ep3;.\hl2\elements;$SRCDIR\game\shared\hl2;$SRCDIR\game\shared\ep3;$SRCDIR\game\client\hl2\gameui;$SRCDIR\game\shared\episodic;$BASE"
+		$PreprocessorDefinitions		"$BASE;HL2_CLIENT_DLL;HL2_EPISODIC;HL2_EP3;USE_BLOBULATOR;GAMEUI_EMBEDDED;GAMEUI_EXPORTS"
 	}
 }
 
@@ -25,22 +25,6 @@ $Project "Client (EP3)"
 		$File	"hud_chat.cpp"
 		$File	"c_team_objectiveresource.cpp"
 		$File	"c_team_objectiveresource.h"
-
-		$Folder "EP3"
-		{
-			$File	"c_EntityFreezing.cpp"
-			$File	"c_EntityFreezing.h"
-			$File	"c_surfacerender.cpp"
-			$File	"c_surfacerender.h"
- 			$File	"hl2\c_npc_surface.cpp"
- 			$File	"hl2\c_npc_surface.h"
- 			$File	"hl2\c_npc_fountain.cpp"
- 			$File	"hl2\c_npc_demomonster.cpp"
- 			$File	"c_weapon_particletest.cpp"
- 			$File	"ep3\c_weapon_icegun.cpp"
-			$File	"$SRCDIR\game\shared\blob_networkbypass.cpp"
-			$File	"$SRCDIR\game\shared\blob_networkbypass.h"
-		}
 
 		$Folder	"HL2 DLL"
 		{
@@ -299,13 +283,14 @@ $Project "Client (EP3)"
 			$File	"hl2\hud_blood.cpp"
 			$File	"hl2\hud_credits.cpp"
 			$File	"hl2\hud_damageindicator.cpp"
-			$File	"hl2\hud_flashlight.cpp"
+			$File	"hl2\hud_teleport.cpp"
 			$File	"hl2\hud_locator.cpp"
 			$File	"hl2\hud_health.cpp"
 			$File	"hl2\hud_poisondamageindicator.cpp"			
 			$File	"hud_posture.cpp"
 			$File	"hl2\hud_quickinfo.cpp"
 			$File	"hl2\hud_radar.cpp"
+			$File	"hl2\c_npc_surface.cpp"
 			$File	"hl2\hud_radar.h"
 			$File	"hud_squadstatus.cpp"
 			$File	"hl2\hud_suitpower.cpp"
@@ -317,7 +302,34 @@ $Project "Client (EP3)"
 			$File	"hl2\vgui_rootpanel_hl2.cpp"
 			$File	"episodic\c_npc_puppet.cpp"
 
+
 			$File	"c_hl2_lesson.cpp"
+
+
+							$Folder "EP3"
+				{
+			$File	"hl2\c_blob_particle.cpp"
+			$File	"hl2\c_blob_particle.h"
+			$File	"$SRCDIR\game\shared\blob_networkbypass.h"
+			$File	"$SRCDIR\game\shared\blob_networkbypass.cpp"
+			$File	"$SRCDIR\game\shared\ep3\blob_shareddefs.h"
+			$File	"ep3\c_blob_mine.cpp"
+			$File	"ep3\c_blob_mine.h"
+			$File	"ep3\c_dust_cloud.cpp"
+			$File	"ep3\c_dust_cloud.h"
+			$File	"ep3\c_gas_pump.cpp"
+			$File	"ep3\c_npc_advisor_roaming.cpp"
+			$File	"ep3\c_npc_blob.cpp"
+			$File	"ep3\c_npc_blob.h"
+			$File	"ep3\c_npc_blob_tiny.cpp"
+			$File	"ep3\c_npc_blob_tiny.h"
+			$File	"ep3\c_weapon_flamethrower.cpp"
+			$File	"ep3\c_weapon_icegun.cpp"
+			$File	"ep3\c_weapon_weaponizer.cpp"
+			$File	"ep3\fx_gauss.cpp"
+			$File	"ep3\splatter.cpp"//HMMM l4d splatter
+}
+
 		}
 	}
 

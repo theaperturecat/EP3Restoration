@@ -1,0 +1,34 @@
+weapon_manifest
+{
+	// ep3
+	"file"		"scripts/weapon_weaponizer.txt"
+	"file"		"scripts/weapon_icegun.txt"
+	"file"		"scripts/weapon_flechettegun.txt"
+	"file"		"scripts/weapon_gauss.txt"
+	"file"		"scripts/weapon_egon.txt"
+	"file"		"scripts/weapon_flamethrower.txt"
+	"file"		"scripts/weapon_pipebomblauncherr.txt"
+
+	// episodic
+	"file"		"scripts/weapon_alyxgun.txt"
+	"file"		"scripts/weapon_annabelle.txt"
+	"file"		"scripts/weapon_citizenpackage.txt"
+	"file"		"scripts/weapon_citizensuitcase.txt"
+	"file"		"scripts/weapon_crossbow.txt"
+	"file"		"scripts/weapon_cubemap.txt"
+	"file"		"scripts/weapon_hopwire.txt"
+
+	// hl2
+	"file"		"scripts/weapon_357.txt"
+	"file"		"scripts/weapon_ar2.txt"
+	"file"		"scripts/weapon_bugbait.txt"
+	"file"		"scripts/weapon_crowbar.txt"
+	"file"		"scripts/weapon_frag.txt"
+	"file"		"scripts/weapon_physcannon.txt"
+	"file"		"scripts/weapon_physgun.txt"
+	"file"		"scripts/weapon_pistol.txt"
+	"file"		"scripts/weapon_rpg.txt"
+	"file"		"scripts/weapon_shotgun.txt"
+	"file"		"scripts/weapon_smg1.txt"
+	"file"		"scripts/weapon_stunstick.txt"
+}

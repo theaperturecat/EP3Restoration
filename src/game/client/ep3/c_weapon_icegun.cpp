@@ -1,147 +1,264 @@
-//========= Copyright Valve Corporation, All rights reserved. ============//
+//========= Copyright © 1996-2008, Valve Corporation, All rights reserved. ====
 //
 // Purpose: 
 //
-// $NoKeywords: $
-//===========================================================================//
+//=============================================================================
 
 #include "cbase.h"
-#include "hud.h"
-#include "in_buttons.h"
-#include "beamdraw.h"
-#include "c_weapon__stubs.h"
-#include "basehlcombatweapon_shared.h"
-//#include "clienteffectprecachesystem.h"
+#include "c_surfacerender.h"
+#include "view_scene.h"
+#include "materialsystem/imaterialvar.h"
+//#include "model_types.h"
 
-// memdbgon must be the last include file in a .cpp file!!!
-#include "tier0/memdbgon.h"
 
-PRECACHE_REGISTER_BEGIN(GLOBAL, PrecacheEffectIceGun)
-PRECACHE(MATERIAL, "sprites/physbeam")
-PRECACHE_REGISTER_END()
+#define SCULPTURE_SURFACE_RADIUS 0.7f
 
-class C_BeamQuadratic : public CDefaultClientRenderable
+
+class C_IceSculpture: public C_BaseAnimating
 {
+	DECLARE_CLASS( C_IceSculpture, C_BaseAnimating );
+	DECLARE_SHAREDCLASS();
+
+private:
+	void UpdateRenderBoundsAndOriginWorldspace( void ) const;
+
 public:
-	C_BeamQuadratic();
-	void			Update(C_BaseEntity* pOwner);
+	C_IceSculpture( void );
 
-	// IClientRenderable
-	virtual const Vector& GetRenderOrigin(void) { return m_worldPosition; }
-	virtual const QAngle& GetRenderAngles(void) { return vec3_angle; }
-	virtual bool					ShouldDraw(void) { return true; }
-	virtual bool					IsTransparent(void) { return true; }
-	virtual bool					ShouldReceiveProjectedTextures(int flags) { return false; }
-	virtual int						DrawModel(int flags, const RenderableInstance_t& instance);
+	virtual IClientModelRenderable* GetClientModelRenderable() { return NULL; }//ported from blob, without this ice is broken
 
-	// Returns the bounds relative to the origin (render bounds)
-	virtual void	GetRenderBounds(Vector& mins, Vector& maxs)
-	{
-		// bogus.  But it should draw if you can see the end point
-		mins.Init(-32, -32, -32);
-		maxs.Init(32, 32, 32);
-	}
+	virtual void			Activate( void );
 
-	const matrix3x4_t& RenderableToWorldTransform()
-	{
-		static matrix3x4_t mat;
-		SetIdentityMatrix( mat );
-		PositionMatrix(GetRenderOrigin(), mat);
-		//AngleMatrix(GetRenderAngles(), GetRenderOrigin(), mat); maybe this is better?
-		return mat;
-	}
+	virtual const QAngle&	GetRenderAngles( void );
+	virtual const Vector&	GetRenderOrigin( void );
+	virtual void			GetRenderBoundsWorldspace( Vector& absMins, Vector& absMaxs );
+	virtual void			GetRenderBounds( Vector& theMins, Vector& theMaxs );
 
-	C_BaseEntity* m_pOwner;
-	Vector					m_targetPosition;
-	Vector					m_worldPosition;
-	int						m_active;
-	int						m_viewModelIndex;
+	virtual const Vector&	WorldAlignMins( void ) const;
+	virtual const Vector&	WorldAlignMaxs( void ) const;
+	// TODO: This sucks.... I should use a renderCenter variable.
+	virtual const Vector&	WorldSpaceCenter( void );
+	virtual void			ComputeWorldSpaceSurroundingBox( Vector *pMins, Vector *pMaxs );
+
+	virtual int				DrawModel( int flags, const RenderableInstance_t &instance );
+	virtual bool			ShouldDraw( void ) { return true; }
+
+	void SetUpDrawLighting();
+
+private:
+	mutable Vector	m_vCachedRenderOrigin;
+	mutable Vector	m_vCachedWorldMins;
+	mutable Vector	m_vCachedWorldMaxs;
+	mutable int		m_iCachedWorldBoundsUpdateTick;
+
+public:
+	Vector4D	m_lightingBoxColors[6];	// WORK IN PROGRESS
+	bool		m_bOriginsRelativeToCenter;
+	CSharedUtlVector( Vector, m_vecOrigins );
+
+	DECLARE_CLIENTCLASS();
 };
 
-C_BeamQuadratic::C_BeamQuadratic()
+
+IMPLEMENT_CLIENTCLASS_DT( C_IceSculpture, DT_IceSculpture, CIceSculpture )
+	RecvPropBool( RECVINFO( m_bOriginsRelativeToCenter ) )
+END_RECV_TABLE()
+
+IMPLEMENT_SHAREDCLASS_DT( C_IceSculpture )
+	SharedProp( m_vecOrigins )
+END_SHARED_TABLE()
+
+
+C_IceSculpture::C_IceSculpture( void )
 {
-	m_pOwner = NULL;
+	memset( m_lightingBoxColors, 0, sizeof( m_lightingBoxColors ) );
 }
 
-void C_BeamQuadratic::Update(C_BaseEntity* pOwner)
+void C_IceSculpture::Activate( void )
 {
-	m_pOwner = pOwner;
-	if (m_active)
+	// These aren't saved
+	memset( m_lightingBoxColors, 0, sizeof( m_lightingBoxColors ) );
+}
+
+void C_IceSculpture::UpdateRenderBoundsAndOriginWorldspace( void ) const
+{
+	if( m_iCachedWorldBoundsUpdateTick != gpGlobals->tickcount )
 	{
-		if (m_hRenderHandle == INVALID_CLIENT_RENDER_HANDLE)
+		m_iCachedWorldBoundsUpdateTick = gpGlobals->tickcount;
+
+		if ( m_vecOrigins.Count() == 0 )
+			return;
+
+		Vector vecPos = m_vecOrigins[ 0 ];
+
+		if ( m_bOriginsRelativeToCenter )
 		{
-			ClientLeafSystem()->AddRenderable(this, true, RENDERABLE_IS_TRANSLUCENT, RENDERABLE_MODEL_ENTITY);
+			Vector vecTransformedPos;
+			EntityToWorldSpace( vecPos, &vecTransformedPos );
+			vecPos = vecTransformedPos;
+		}
+
+		m_vCachedWorldMins = vecPos;
+		m_vCachedWorldMaxs = vecPos;
+
+		if ( m_bOriginsRelativeToCenter )
+		{
+			for (int i = 1; i < m_vecOrigins.Count(); i++)
+			{
+				EntityToWorldSpace( m_vecOrigins[ i ], &vecPos );
+				VectorMin( vecPos, m_vCachedWorldMins, m_vCachedWorldMins );
+				VectorMax( vecPos, m_vCachedWorldMaxs, m_vCachedWorldMaxs );
+			}
 		}
 		else
 		{
-			ClientLeafSystem()->RenderableChanged(m_hRenderHandle);
+			for (int i = 1; i < m_vecOrigins.Count(); i++)
+			{
+				vecPos = m_vecOrigins[ i ];
+				VectorMin( vecPos, m_vCachedWorldMins, m_vCachedWorldMins );
+				VectorMax( vecPos, m_vCachedWorldMaxs, m_vCachedWorldMaxs );
+			}
 		}
-	}
-	else if (!m_active && m_hRenderHandle != INVALID_CLIENT_RENDER_HANDLE)
-	{
-		ClientLeafSystem()->RemoveRenderable(m_hRenderHandle);
+
+		m_vCachedRenderOrigin = ( m_vCachedWorldMaxs + m_vCachedWorldMins ) * 0.5f;
+
+		Vector vRadius = ReplicateToVector( SCULPTURE_SURFACE_RADIUS * 12.0f );
+		m_vCachedWorldMins -= vRadius;
+		m_vCachedWorldMaxs += vRadius;
 	}
 }
 
-
-int	C_BeamQuadratic::DrawModel(int flags, const RenderableInstance_t& instance)
+const QAngle& C_IceSculpture::GetRenderAngles()
 {
-	Vector points[3];
-	QAngle tmpAngle;
+	return g_SurfaceRenderAnglesAngles;
+}
 
-	if (!m_active)
+const Vector& C_IceSculpture::GetRenderOrigin( void )
+{
+	UpdateRenderBoundsAndOriginWorldspace();
+	return m_vCachedRenderOrigin;
+}
+
+void C_IceSculpture::GetRenderBoundsWorldspace( Vector& absMins, Vector& absMaxs )
+{
+	UpdateRenderBoundsAndOriginWorldspace();
+	absMins = m_vCachedWorldMins;
+	absMaxs = m_vCachedWorldMaxs;
+}
+
+void C_IceSculpture::GetRenderBounds( Vector& theMins, Vector& theMaxs )
+{
+	UpdateRenderBoundsAndOriginWorldspace();
+
+	theMins = m_vCachedWorldMins - m_vCachedRenderOrigin;
+	theMaxs = m_vCachedWorldMaxs - m_vCachedRenderOrigin;
+}
+
+const Vector& C_IceSculpture::WorldAlignMins() const
+{
+	UpdateRenderBoundsAndOriginWorldspace();
+	return m_vCachedWorldMins;
+}
+
+const Vector& C_IceSculpture::WorldAlignMaxs() const
+{
+	UpdateRenderBoundsAndOriginWorldspace();
+	return m_vCachedWorldMaxs;
+}
+
+const Vector& C_IceSculpture::WorldSpaceCenter()
+{
+	return GetRenderOrigin();
+}
+
+void C_IceSculpture::ComputeWorldSpaceSurroundingBox( Vector *pMins, Vector *pMaxs )
+{
+	GetRenderBoundsWorldspace( *pMins, *pMaxs );
+}
+
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+// Input  : flags - 
+// Output : int
+//-----------------------------------------------------------------------------
+int C_IceSculpture::DrawModel( int flags, const RenderableInstance_t &instance )
+{
+	// See if we should draw
+	if ( m_bReadyToDraw == false )
 		return 0;
 
-	C_BaseEntity* pEnt = cl_entitylist->GetEnt(m_viewModelIndex);
-	if (!pEnt)
-		return 0;
+	SetUpDrawLighting();
 
-	CMatRenderContextPtr pRenderContext(materials);
+	IMaterial *pMaterial = materials->FindMaterial( "models/weapons/w_icegun/ice_surface", TEXTURE_GROUP_OTHER, true );
 
-	pEnt->GetAttachment(1, points[0], tmpAngle);
+	// FIXME: Only do this once a frame for the first ice sculpture rendered
+	if ( pMaterial->NeedsFullFrameBufferTexture() )
+	{
+		UpdateScreenEffectTexture();
+	}
 
-	points[1] = 0.5 * (m_targetPosition + points[0]);
+	int iNumParticles = 0;
 
-	// a little noise 11t & 13t should be somewhat non-periodic looking
-	//points[1].z += 4*sin( gpGlobals->curtime*11 ) + 5*cos( gpGlobals->curtime*13 );
-	points[2] = m_worldPosition;
+	g_SurfaceRenderParticles.SetCount( m_vecOrigins->Count() );
 
-	IMaterial* pMat = materials->FindMaterial("sprites/physbeam", TEXTURE_GROUP_CLIENT_EFFECTS);
-	Vector color(1, 1, 1);
+	if ( m_bOriginsRelativeToCenter )
+	{
+		for ( int i = 0; i < m_vecOrigins->Count(); ++i )
+		{
+			Vector vecWorldCenter = m_vecOrigins[ i ];
 
-	float scrollOffset = gpGlobals->curtime - (int)gpGlobals->curtime;
-	pRenderContext->Bind(pMat);
-	DrawBeamQuadratic(points[0], points[1], points[2], 13, color, scrollOffset);
+			Vector vecTransformedWorldCenter;
+			EntityToWorldSpace( vecWorldCenter, &vecTransformedWorldCenter );
+
+			ImpParticleWithOneInterpolant* imp_particle = &(g_SurfaceRenderParticles[ i ]);
+			imp_particle->center = vecTransformedWorldCenter;
+			imp_particle->setFieldScale( SCULPTURE_SURFACE_RADIUS );
+			imp_particle->interpolants1.set( 1.0f, 0.0f, 0.0f );
+			imp_particle->interpolants1[ 3 ] = 0.0f;
+
+			++iNumParticles;
+		}
+	}
+	else
+	{
+		for ( int i = 0; i < m_vecOrigins->Count(); ++i )
+		{
+			Vector vecWorldCenter = m_vecOrigins[ i ];
+
+			ImpParticleWithOneInterpolant* imp_particle = &(g_SurfaceRenderParticles[ i ]);
+			imp_particle->center = vecWorldCenter;
+			imp_particle->setFieldScale( SCULPTURE_SURFACE_RADIUS );
+			imp_particle->interpolants1.set( 1.0f, 0.0f, 0.0f );
+			imp_particle->interpolants1[ 3 ] = 0.0f;
+
+			++iNumParticles;
+		}
+	}
+
+	g_SurfaceRenderParticles.SetCountNonDestructively( iNumParticles );
+
+	Surface_Draw( GetClientRenderable(), GetRenderOrigin(), pMaterial, 6.5f );
 	return 1;
 }
 
-
-class C_WeaponIcegun : public C_BaseHLCombatWeapon
+void C_IceSculpture::SetUpDrawLighting()
 {
-	DECLARE_CLASS(C_WeaponIcegun, C_BaseHLCombatWeapon);
-public:
-	C_WeaponIcegun() {}
-
-	DECLARE_CLIENTCLASS();
-	DECLARE_PREDICTABLE();
-
-	void OnDataChanged(DataUpdateType_t updateType)
+	if ( GetModelInstance() == MODEL_INSTANCE_INVALID )
 	{
-	BaseClass::OnDataChanged(updateType);
-	m_beam.Update(this);
+		// we need a model instance so that we can perform smooth lighting interpolation
+		CreateModelInstance();
 	}
 
-private:
-	C_WeaponIcegun(const C_WeaponIcegun&);
+	modelrender->SetupLightingEx( GetRenderOrigin(), GetModelInstance() );
 
-	C_BeamQuadratic	m_beam;
-};
+	// We sometimes get an invalid ambient lightcube, this func smooths over that
+	// FIXME: this is probably to do with sampling at invalid locations
+	Surface_SafeLightCubeUpdate( GetRenderOrigin(), m_lightingBoxColors );
 
-STUB_WEAPON_CLASS_IMPLEMENT(weapon_icegun, C_WeaponIcegun);
-
-IMPLEMENT_CLIENTCLASS_DT(C_WeaponIcegun, DT_WeaponIcegun, CWeaponIcegun)
-RecvPropVector(RECVINFO_NAME(m_beam.m_targetPosition, m_targetPosition)),
-RecvPropVector(RECVINFO_NAME(m_beam.m_worldPosition, m_worldPosition)),
-RecvPropInt(RECVINFO_NAME(m_beam.m_active, m_active)),
-RecvPropInt(RECVINFO_NAME(m_beam.m_viewModelIndex, m_viewModelIndex)),
-END_RECV_TABLE()
+	// Set our 'fixed' lightcube
+	if ( materials && materials->GetRenderContext() )
+	{
+		materials->GetRenderContext()->SetAmbientLightCube( m_lightingBoxColors );
+	}
+}

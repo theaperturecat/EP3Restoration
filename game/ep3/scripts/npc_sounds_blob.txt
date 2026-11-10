@@ -1,0 +1,201 @@
+// Blob
+"Blob.NavigationBusted"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.8"
+	"soundlevel"  	"SNDLVL_90dB"
+	"pitch"		"90,110"
+
+	"wave"	"npc/blob/blob_navbusted.wav"
+}
+
+"Blob.Regenerate"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.8"
+	"soundlevel"  	"SNDLVL_90dB"
+	"pitch"		"90,110"
+
+	"wave"	"npc/blob/blob_regenerate.wav"
+}
+
+"Blob.Pain"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.8"
+	"soundlevel"  	"SNDLVL_90dB"
+	"pitch"		"90,110"
+
+	"rndwave"
+	{
+		"wave"	"npc/blob/blob_pain1.wav"
+		"wave"	"npc/blob/blob_pain2.wav"
+		"wave"	"npc/blob/blob_pain3.wav"
+	}
+}
+
+"Blob.BrainPain"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.8"
+	"soundlevel"  	"SNDLVL_90dB"
+	"pitch"		"90,110"
+
+	"rndwave"
+	{
+		"wave"	"npc/blob/blob_brain_pain1.wav"
+		"wave"	"npc/blob/blob_brain_pain2.wav"
+		"wave"	"npc/blob/blob_brain_pain3.wav"
+	}
+}
+
+"Blob.BrainPainHeavy"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.8"
+	"soundlevel"  	"SNDLVL_90dB"
+	"pitch"		"90,110"
+
+	"rndwave"
+	{
+		"wave"	"npc/blob/blob_brain_pain1.wav"
+		"wave"	"npc/blob/blob_brain_pain2.wav"
+		"wave"	"npc/blob/blob_brain_pain3.wav"
+	}
+}
+
+"Blob.SpawnRegenerator"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.8"
+	"soundlevel"  	"SNDLVL_90dB"
+	"pitch"		"90,110"
+
+	"wave"	"npc/blob/blob_spawn_regenerator.wav"
+}
+
+"Blob.AnnounceLeap"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.8"
+	"soundlevel"  	"SNDLVL_90dB"
+	"pitch"		"90,110"
+
+	"wave"	"npc/blob/blob_announce_leap.wav"
+}
+
+"Blob.LeapImpact"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.8"
+	"soundlevel"  	"SNDLVL_90dB"
+	"pitch"		"90,110"
+
+	"wave"	"npc/blob/blob_leap_impact.wav"
+}
+
+"Blob.Leap"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.8"
+	"soundlevel"  	"SNDLVL_90dB"
+	"pitch"		"90,110"
+
+	"wave"	"npc/blob/blob_leap.wav"
+}
+
+"Blob.AmbientLoop"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.8"
+	"soundlevel"  	"SNDLVL_90dB"
+	"pitch"		"90,110"
+
+	"wave"	"npc/blob/blob_ambient_loop.wav"
+}
+
+"Blob.Merge"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.8"
+	"soundlevel"  	"SNDLVL_90dB"
+	"pitch"		"90,110"
+
+	"wave"	"npc/blob/blob_merge.wav"
+}
+
+"Blob.Split"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.8"
+	"soundlevel"  	"SNDLVL_90dB"
+	"pitch"		"90,110"
+
+	"wave"	"npc/blob/blob_split.wav"
+}
+
+"Blob.EnterPipe"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.8"
+	"soundlevel"  	"SNDLVL_90dB"
+	"pitch"		"90,110"
+
+	"wave"	"npc/blob/blob_enter_pipe.wav"
+}
+
+"Blob.AnnounceSpit"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.8"
+	"soundlevel"  	"SNDLVL_90dB"
+	"pitch"		"90,110"
+
+	"wave"	"npc/blob/blob_announce_spit.wav"
+}
+
+"Blob.AnnounceShake"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.8"
+	"soundlevel"  	"SNDLVL_90dB"
+	"pitch"		"90,110"
+
+	"wave"	"npc/blob/blob_announce_shake.wav"
+}
+
+//Blob Tiny
+"NPC_BlobTiny.Held"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.8"
+	"soundlevel"  	"SNDLVL_90dB"
+	"pitch"		"90,110"
+
+	"wave"	"npc/blob/blob_tiny_held"
+}
+
+"NPC_BlobTiny.Fear"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.8"
+	"soundlevel"  	"SNDLVL_90dB"
+	"pitch"		"90,110"
+
+	"wave"	"npc/blob/blob_tiny_fear"
+}
+
+"NPC_BlobTiny.Hate"
+{
+	"channel"		"CHAN_VOICE"
+	"volume"		"0.8"
+	"soundlevel"  	"SNDLVL_90dB"
+	"pitch"		"90,120"
+
+	"rndwave"
+	{
+		"wave"	"npc/blob/blob_tiny_hate1.wav"
+		"wave"	"npc/blob/blob_tiny_hate2.wav"
+		"wave"	"npc/blob/blob_tiny_hate3.wav"
+	}
+}

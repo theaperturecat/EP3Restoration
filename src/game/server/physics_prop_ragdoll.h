@@ -116,6 +116,8 @@ private:
 	void UpdateNetworkDataFromVPhysics( IPhysicsObject *pPhysics, int index );
 	void FadeOutThink();
 
+	virtual int GetWeaponizerMaterialType();
+
 	bool				m_bStartDisabled;
 
 	CNetworkArray( Vector, m_ragPos, RAGDOLL_MAX_ELEMENTS );

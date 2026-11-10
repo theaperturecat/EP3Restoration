@@ -27,7 +27,12 @@ public:
 
 	virtual bool	GetSoundSpatialization(SpatializationInfo_t& info);
 
+	mutable CVarBitVec m_vOutOfWorldParticleMask;//kinda guessing this
+
 	virtual void SetupParticles();
+
+	CVarBitVec& GetOutOfWorldParticleMask() { return m_vOutOfWorldParticleMask; };
+	void SetUpParticleVector(bool) { };
 
 	//#define	MAX_SURFACE_ELEMENTS 1000//BLOB_MAX_LEVEL_PARTICLES //200
 

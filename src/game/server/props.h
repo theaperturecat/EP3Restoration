@@ -40,6 +40,14 @@ public:
 	// Don't treat as a live target
 	virtual bool IsAlive( void ) { return false; }
 	virtual bool OverridePropdata() { return true; }
+	int GetWeaponizerMaterialType()
+	{
+		if ( !GetModelPtr() )
+			return WEAPONIZER_MATERIAL_TYPE_CONCRETE;
+
+		return WEAPONIZER_MATERIAL_TYPE_CONCRETE;
+	}
+
 };
 
 

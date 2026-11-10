@@ -1,0 +1,44 @@
+"Blob"
+{
+	"$basetexture" 		"models/blob/blob"
+	"$normalmap" 		"models/blob/blob_normal"
+	"$specmasktexture"	"models/blob/blob_specmask"
+	"$lightwarptexture" 	"models/blob/blob_lightwarp"
+	"$fresnelwarptexture" 	"models/blob/blob_fresnelwarp"
+	"$opacitytexture"	"models/blob/blob_opacity"
+
+	"$envmap" 		"Env_cubemap"
+
+	"$uvscale"		"0.02"
+	"$bumpstrength"		"1.0"
+	"fresnelbumpstrength"	"1.0"
+	"translucentfresnelmunmaxexp"	"[0.8 1.0 1.0]"
+
+//	"$nocull"		"1"
+
+	"$diffuseboost"		"1.0"
+
+	"$interior"			"1"
+	"$interiorfogstrength"		"0.06"
+	"$interiorfoglimit"		"0.8"
+	"$interiorfognormalboost"	"0.0"
+	"$interiorbackgroundboost" 	"1"
+	"$interiorambientscale"		"0.3"
+	"$interiorbacklightscale"	"0.3"
+	"$interiorcolor"		"[0.7 0.5 0.45]"	
+	"$interiorrefractstrength"	"0.015"
+	"$interiorrefractblur"		"0.2"
+
+	"$phongboost"		"1"
+	"$phongboost2"		"1"
+	"$phongexponent"	"48"
+	"$phongexponent2"	"1"
+	"$rimlightboost"	"1"
+	"$rimlightexponent"	"48"
+
+	"$basecolortint"	"[1.0 1.0 1.0]"
+
+//	"$contactshadows"	"1"
+
+	"$surfaceprop"		"flesh"
+}

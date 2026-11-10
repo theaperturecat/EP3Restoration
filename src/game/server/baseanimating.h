@@ -368,6 +368,14 @@ private:
 public:
 	bool CanSkipAnimation( void );
 
+	virtual int GetWeaponizerMaterialType()
+		{
+			if ( IsOnFire() )
+				return WEAPONIZER_MATERIAL_TYPE_FIRE;
+		
+			return BaseClass::GetWeaponizerMaterialType();
+		}
+
 
 
 public:

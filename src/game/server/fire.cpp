@@ -162,6 +162,13 @@ public:
 	void	InputExtinguishTemporary( inputdata_t &inputdata );
 	void	InputEnable( inputdata_t &inputdata );
 	void	InputDisable( inputdata_t &inputdata );
+	virtual int GetWeaponizerMaterialType(void) 
+	{
+	if ( IsBurning() == true )
+		return WEAPONIZER_MATERIAL_TYPE_FIRE; 
+
+	return WEAPONIZER_MATERIAL_TYPE_NONE;
+}
 
 protected:
 	

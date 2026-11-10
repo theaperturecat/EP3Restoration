@@ -39,15 +39,24 @@ STUB_WEAPON_CLASS( weapon_crowbar, WeaponCrowbar, C_BaseHLBludgeonWeapon );
 #ifdef HL2_EPISODIC
 STUB_WEAPON_CLASS( weapon_hopwire, WeaponHopwire, C_BaseHLCombatWeapon );
 STUB_WEAPON_CLASS( weapon_proto1, WeaponProto1, C_BaseHLCombatWeapon );
-#endif
+#endif 
 #ifdef HL2_LOSTCOAST
 STUB_WEAPON_CLASS( weapon_oldmanharpoon, WeaponOldManHarpoon, C_WeaponCitizenPackage );
 #endif
 
 #ifdef HL2_EP3
 STUB_WEAPON_CLASS(weapon_teleport, WeaponTeleport, C_BaseHLCombatWeapon);
-STUB_WEAPON_CLASS(weapon_weaponizer, WeaponWeaponizer, C_BaseHLCombatWeapon);
+STUB_WEAPON_CLASS(weapon_egon, WeaponEgon, C_BaseHLCombatWeapon);
+STUB_WEAPON_CLASS(weapon_flechettegun, WeaponFlechetteGun, C_HLSelectFireMachineGun);
+STUB_WEAPON_CLASS(weapon_gauss, WeaponGauss, C_BaseHLCombatWeapon);
+STUB_WEAPON_CLASS(weapon_icegun, WeaponIcegun, C_BaseHLCombatWeapon);
+STUB_WEAPON_CLASS(weapon_pipebomblauncher, WeaponPipeBombLauncher, C_HLSelectFireMachineGun);
+
+
+
+
 #endif
+
 
 #endif
 

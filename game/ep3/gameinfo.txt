@@ -3,7 +3,7 @@
 	game 		"Half Life 2: Episode 3"
 	title 		"Episode 3"
 	"type"		"singleplayer_only"
-	GameData	"swarm.fgd"
+	GameData	"ep3.fgd"
 	InstancePath "tilegen/instances/"
 	
 	SupportsDX8     0
@@ -15,7 +15,6 @@
 		
 		"SearchPaths"
 		{
-			//"Game"	"|gameinfo_path|pak01_dir"
 			"Game"	"|gameinfo_path|."
 			"Game"	"E:\valve_asw_content\ep2_workshop"
 			"Game"	"E:\valve_asw_content\episodic_workshop"

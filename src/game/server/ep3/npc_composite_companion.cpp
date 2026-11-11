@@ -60,7 +60,7 @@ int ACT_BARE_TEETH;
 int ACT_RECOIL_LEFT_LIGHT;
 int ACT_RECOIL_RIGHT_LIGHT;
 
-ConVar sk_soldier_mid_snarl("sk_soldier_mid_snarl","4.0f");
+ConVar sk_soldier_mid_snarl("sk_soldier_mid_snarl","4.0");
 
 //-----------------------------------------------
 // ConVars

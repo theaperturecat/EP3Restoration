@@ -1,0 +1,39 @@
+@include "halflife2.fgd"
+
+@PointClass base(Weapon) studio("models/weapons/w_models/w_weaponizer.mdl") = weapon_weaponizer : "Weaponizer" []
+
+@SolidClass base(Targetname, Parentname) = func_electricity : "Weaponizer Electricity"
+[
+    emitter(boolean) : "Emitter" : 0
+
+    input EnableEmitter(void) : "Enable the electricity emitter."
+    input DisableEmitter(void) : "Disable the electricity emitter."
+]
+
+
+@SolidClass base(Targetname, Parentname) = func_weaponizer_water : "Weaponizer Water"
+[
+    damage(integer) : "Damage" : 0
+    damagerate(float) : "Damage Rate" : 0
+    damageduration(float) : "Damage Duration" : 0
+
+    input WaterShock(void) : "Apply a water shock."
+    input StartWaterShock(void) : "Start the water shock effect."
+    input WaterSparkEffect(void) : "Create water spark effects."
+    input PlayLeakSound(void) : "Play the leak sound."
+]
+
+@SolidClass base(Targetname, Parentname) = func_weaponizer_fire : "Weaponizer Fire"
+[
+]
+
+@SolidClass base(Targetname, Parentname) = func_weaponizer_fuel : "Weaponizer Fuel"
+[
+    input PlayLeakSound(void) : "Play the leak sound."
+]
+
+
+@SolidClass base(Targetname, Parentname) = func_liquids_pipe : "Weaponizer Liquid Pipe"
+[
+    type(integer) : "Liquid Type" : 0
+]

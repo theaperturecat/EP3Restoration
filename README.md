@@ -19,6 +19,8 @@ Guess what: The episode 3 codebase leaked.
 5. If you have not installed Alien Swarm to C:\Program Files (x86)\Steam\steamapps\common\Alien Swarm\, modify run_client.bat and gameinfo.txt to point to the correct directory
 6. Run the game via run_client.bat
 
+
+
 ## Building
 1. Install Visual Studio 2013 (This is required even if you have a newer version of VS installed)
 2. Go to src/ and run creategameprojects2013.bat
@@ -31,6 +33,13 @@ Guess what: The episode 3 codebase leaked.
 * Fix blob rendering
 * Improve icegun stability
 * Remake models and assets
+* Fix blob mines and tiny blob rendering
+* Fix cubemaps
+* Remake particles
+* Fix weaponizer particles
+* Research weaponizer
+* Fix map
+* Fix a lot of things
 
 ## Credits
 * GaijinViking - Discovering the Episode 3 ice texture exists in Dota 2, and helping me find code to decompile.

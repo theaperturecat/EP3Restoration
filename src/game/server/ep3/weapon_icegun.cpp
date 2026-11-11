@@ -130,7 +130,7 @@ static ConVar sk_npc_dmg_cryodart( "sk_npc_dmg_cryodart", "4" );
 
 extern ConVar sv_special_suit_abilities;
 
-static const char* ICEGUN_MODEL_SPHERE = "models/props_junk/watermelon01.mdl";//"models/weapons/w_ball_small.mdl"; theaperturecat models fixme
+static const char* ICEGUN_MODEL_SPHERE = "models/weapons/w_ball_small.mdl";
 
 // FIXME: not multiplayer friendly
 static CWeaponIcegun *s_pIcegun = NULL;

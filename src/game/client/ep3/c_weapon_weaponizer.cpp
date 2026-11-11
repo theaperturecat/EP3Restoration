@@ -205,7 +205,7 @@ void C_WeaponWeaponizer::TurnOffAllEffects( void )
 void C_WeaponWeaponizer::ManageAmmoParticleEffects( void )
 {
 	// FIXME: particle effects are broken, disabling for now
-	return;
+	//return;
 
 	if ( m_iPrimaryAmmoType != m_iCachedPrimaryAmmo || m_bResetAmmo == true )
 	{
@@ -224,7 +224,10 @@ void C_WeaponWeaponizer::ManageAmmoParticleEffects( void )
 				if ( GetEffectViewModel() )
 				{
 					m_pTubePrimaryAmmo = GetEffectViewModel()->ParticleProp()->Create( p_szAmmoEffectName[m_iPrimaryAmmoType], PATTACH_POINT_FOLLOW, "ltube_pattach_base" );
-					GetEffectViewModel()->ParticleProp()->AddControlPoint( m_pTubePrimaryAmmo, 1, GetEffectViewModel(), PATTACH_POINT_FOLLOW, "ltube_pattach_end" );
+					if (m_pTubePrimaryAmmo)//
+						GetEffectViewModel()->ParticleProp()->AddControlPoint(m_pTubePrimaryAmmo, 1, GetEffectViewModel(), PATTACH_POINT_FOLLOW, "ltube_pattach_end");
+					else
+						Warning("m_pTubePrimaryAmmo is NULL, this probably means weaponizer is missing a particle effect!!!");
 				}
 			}
 		}
@@ -246,8 +249,12 @@ void C_WeaponWeaponizer::ManageAmmoParticleEffects( void )
 			{
 				if ( GetEffectViewModel() )
 				{
+					
 					m_pTubeSecondaryAmmo = GetEffectViewModel()->ParticleProp()->Create( p_szAmmoEffectName[m_iSecondaryAmmoType], PATTACH_POINT_FOLLOW, "rtube_pattach_base" );
+					if (m_pTubeSecondaryAmmo)//
 					GetEffectViewModel()->ParticleProp()->AddControlPoint( m_pTubeSecondaryAmmo, 1, GetEffectViewModel(), PATTACH_POINT_FOLLOW, "rtube_pattach_end" );
+					else
+						Warning("m_pTubeSecondaryAmmo is NULL, this probably means weaponizer is missing a particle effect!!!");
 				}
 			}
 		}

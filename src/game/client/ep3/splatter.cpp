@@ -227,6 +227,7 @@ void CHudBlood::MsgFunc_SplatterClear( bf_read &msg )
 //-----------------------------------------------------------------------------
 void CHudBlood::Paint( void )
 {
+	return;//Temp theaperturecat
 	C_BasePlayer *player = C_BasePlayer::GetLocalPlayer();
 	
 	if ( player == NULL )

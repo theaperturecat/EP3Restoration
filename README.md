@@ -62,3 +62,4 @@ These behave like their versions in Half Life Source.
 * Wonderland War - For getting a recreation of the Episode 3 Weaponizer model made
 * Valve - For making a great game, even if they did abandon it.
 * OddDoc - Physics parameter file (that was a pain to work out, good thing he remade it) and blob materials
+* Steryo Yamada - Tutorial map

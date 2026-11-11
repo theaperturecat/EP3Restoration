@@ -4394,6 +4394,7 @@ void CWeaponPhysCannon::DoMegaEffect( int effectType, Vector *pos )
 //-----------------------------------------------------------------------------
 void CWeaponPhysCannon::DoEffect( int effectType, Vector *pos )
 {
+	//return;
 	// Make sure we're active
 	StartEffects();
 

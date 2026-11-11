@@ -19,7 +19,22 @@ Guess what: The episode 3 codebase leaked.
 5. If you have not installed Alien Swarm to C:\Program Files (x86)\Steam\steamapps\common\Alien Swarm\, modify run_client.bat and gameinfo.txt to point to the correct directory
 6. Run the game via run_client.bat
 
+## Guide to usage
 
+To start, load the first map in chapter select, ep3_testroom.
+
+### Special suit abilities
+The icegun and teleport gun are both special suit abilities. This means you can select them in weapon select like normal weapons, but you use them with other weapons at the same time. To use these weapons, hold left ALT to fire.
+For example: Select the shotgun, then select the icegun, and you can shoot the shotgun with left click, but holding ALT activates the icegun.
+
+### Weaponizer
+Weaponizer absorbs objects with ALT, and then shoots them back out with left click.
+
+### Flamethrower
+The flamethrower shoots fire with left click, and shoots fuel (that can then be ignited) with right click.
+
+### Tau Cannon and Gauss Gun
+These behave like their versions in Half Life Source.
 
 ## Building
 1. Install Visual Studio 2013 (This is required even if you have a newer version of VS installed)

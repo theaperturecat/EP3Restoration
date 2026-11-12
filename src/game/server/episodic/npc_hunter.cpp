@@ -38,9 +38,9 @@
 #include "shake.h"
 #include "soundenvelope.h"
 #include "soundent.h"
-#include "SpriteTrail.h"
-#include "IEffects.h"
-#include "engine/IEngineSound.h"
+#include "spritetrail.h"
+#include "ieffects.h"
+#include "engine/ienginesound.h"
 #include "bone_setup.h"
 #include "studio.h"
 #include "ai_route.h"
@@ -345,6 +345,7 @@ public:
 	// IParentPropInteraction
 	void OnParentCollisionInteraction( parentCollisionInteraction_t eType, int index, gamevcollisionevent_t *pEvent );
 	void OnParentPhysGunDrop( CBasePlayer *pPhysGunUser, PhysGunDrop_t Reason );
+
 protected:
 
 	void SetupGlobalModelData();
@@ -360,8 +361,6 @@ protected:
 	bool CreateSprites( bool bBright );
 
 	void FlechetteTouch( CBaseEntity *pOther );
-
-	virtual int	GetWeaponizerMaterialType(void) { return WEAPONIZER_MATERIAL_TYPE_CONCRETE; };
 
 	Vector m_vecShootPosition;
 	EHANDLE m_hSeekTarget;
@@ -3512,7 +3511,7 @@ void CNPC_Hunter::StartTask( const Task_t *pTask )
 		case TASK_HUNTER_STAGGER:
 		{
 			// Stagger in the direction the impact force would push us.
-			VMatrix worldToLocalRotation(EntityToWorldTransform());
+			VMatrix worldToLocalRotation = EntityToWorldTransform();
 			Vector vecLocalStaggerDir = worldToLocalRotation.InverseTR().ApplyRotation( m_vecStaggerDir );
 			
 			float flStaggerYaw = VecToYaw( vecLocalStaggerDir );
@@ -4323,28 +4322,26 @@ void CNPC_Hunter::HandleAnimEvent( animevent_t *pEvent )
 {
 	Vector footPosition;
 	QAngle angles;
-
-	int nEvent = pEvent->Event();
 	
-	if ( nEvent == AE_HUNTER_FOOTSTEP_LEFT )
+	if ( pEvent->Event() == AE_HUNTER_FOOTSTEP_LEFT )
 	{
 		LeftFootHit( pEvent->eventtime );
 		return;
 	}
 
-	if ( nEvent == AE_HUNTER_FOOTSTEP_RIGHT )
+	if ( pEvent->Event() == AE_HUNTER_FOOTSTEP_RIGHT )
 	{
 		RightFootHit( pEvent->eventtime );
 		return;
 	}
 
-	if ( nEvent == AE_HUNTER_FOOTSTEP_BACK )
+	if ( pEvent->Event() == AE_HUNTER_FOOTSTEP_BACK )
 	{
 		BackFootHit( pEvent->eventtime );
 		return;
 	}
 	
-	if ( nEvent == AE_HUNTER_START_EXPRESSION )
+	if ( pEvent->Event() == AE_HUNTER_START_EXPRESSION )
 	{
 		if ( pEvent->options && Q_strlen( pEvent->options ) )
 		{
@@ -4354,7 +4351,7 @@ void CNPC_Hunter::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( nEvent == AE_HUNTER_END_EXPRESSION )
+	if ( pEvent->Event() == AE_HUNTER_END_EXPRESSION )
 	{
 		if ( pEvent->options && Q_strlen( pEvent->options ) )
 		{
@@ -4364,13 +4361,13 @@ void CNPC_Hunter::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( nEvent == AE_HUNTER_MELEE_ANNOUNCE )
+	if ( pEvent->Event() == AE_HUNTER_MELEE_ANNOUNCE )
 	{
 		EmitSound( "NPC_Hunter.MeleeAnnounce" );
 		return;
 	}
 		
-	if ( nEvent == AE_HUNTER_MELEE_ATTACK_LEFT )
+	if ( pEvent->Event() == AE_HUNTER_MELEE_ATTACK_LEFT )
 	{
 		Vector right, forward;
 		AngleVectors( GetLocalAngles(), &forward, &right, NULL );
@@ -4382,7 +4379,7 @@ void CNPC_Hunter::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( nEvent == AE_HUNTER_MELEE_ATTACK_RIGHT )
+	if ( pEvent->Event() == AE_HUNTER_MELEE_ATTACK_RIGHT )
 	{
 		Vector right, forward;
 		AngleVectors( GetLocalAngles(), &forward, &right, NULL );
@@ -4394,7 +4391,7 @@ void CNPC_Hunter::HandleAnimEvent( animevent_t *pEvent )
 		return;
 	}
 
-	if ( nEvent == AE_HUNTER_SPRAY_BLOOD )
+	if ( pEvent->Event() == AE_HUNTER_SPRAY_BLOOD )
 	{
 		Vector vecOrigin;
 		Vector vecDir;

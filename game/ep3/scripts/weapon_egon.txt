@@ -23,7 +23,6 @@ WeaponData
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{
-		"empty"		"Weapon_Pistol.Empty"
 	}
 
 	// Weapon Sprite data is loaded by the Client DLL.
@@ -32,12 +31,12 @@ WeaponData
 		"weapon"
 		{
 				"font"		"WeaponIcons"
-				"character"	"e"
+				"character"	"h"
 		}
 		"weapon_s"
 		{	
 				"font"		"WeaponIconsSelected"
-				"character"	"e"
+				"character"	"h"
 		}
 		"ammo"
 		{

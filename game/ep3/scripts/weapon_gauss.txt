@@ -6,7 +6,7 @@ WeaponData
 	"printname"			"#HL2_Gauss"
 	"viewmodel"			"models/weapons/v_models/v_weaponizer.mdl"
 	"playermodel"		"models/weapons/w_models/w_weaponizer.mdl"
-	"anim_prefix"		"python"
+	"anim_prefix"		"gauss"
 	"bucket"		"4"
 	"bucket_position"	"2"
 
@@ -23,7 +23,6 @@ WeaponData
 	// Sounds for the weapon. There is a max of 16 sounds per category (i.e. max 16 "single_shot" sounds)
 	SoundData
 	{
-		"empty"		"Weapon_Pistol.Empty"
 	}
 
 	// Weapon Sprite data is loaded by the Client DLL.
@@ -32,12 +31,12 @@ WeaponData
 		"weapon"
 		{
 				"font"		"WeaponIcons"
-				"character"	"e"
+				"character"	"h"
 		}
 		"weapon_s"
 		{	
 				"font"		"WeaponIconsSelected"
-				"character"	"e"
+				"character"	"h"
 		}
 		"ammo"
 		{

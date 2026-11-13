@@ -32,5 +32,12 @@ Debug*/
 *.vpc_cache
 *.vcxproj.*
 
+*.prt
+*.vmx
+*.ain
+
+game/ep3/demoheader.tmp
+game/ep3/SAVE/
+game/ep3/modelsounds.cache
 game/ep3/cfg/config.cfg
 

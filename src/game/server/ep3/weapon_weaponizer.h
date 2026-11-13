@@ -11,7 +11,7 @@
 #endif
 
 #define WEAPONIZER_MODEL_SPHERE "models/weapons/w_ball_small.mdl"
-#define WEAPONIZER_MODEL_MATTER "models/weapons/matter.mdl"
+#define WEAPONIZER_MODEL_MATTER "models/weapons/w_ball_small.mdl"//"models/weapons/matter.mdl" theaperturecat models
 
 enum attackstate_t
 {

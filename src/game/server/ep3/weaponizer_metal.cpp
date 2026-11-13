@@ -116,7 +116,6 @@ void CMetalSphere::Touch( CBaseEntity *pOther )
 		ExplosionCreate( GetAbsOrigin(), GetAbsAngles(), this, weaponizer_modifier_explosion_damage.GetInt(), 256, true );
 	}
 
-	UTIL_RemoveImmediate( this );
 	AddEffects( EF_NODRAW );
 
 	CTakeDamageInfo info( this, GetOwnerEntity(), weaponizer_matter_damage.GetInt(), DMG_DIRECT );
@@ -160,6 +159,8 @@ void CMetalSphere::Touch( CBaseEntity *pOther )
 			}
 		}
 	}
+
+	UTIL_RemoveImmediate(this);
 }
 
 void CMetalSphere::Spawn( void )

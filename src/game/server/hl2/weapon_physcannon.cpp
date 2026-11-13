@@ -1654,6 +1654,7 @@ void CWeaponPhysCannon::SetViewModel( void )
 //-----------------------------------------------------------------------------
 void CWeaponPhysCannon::ForceDrop( void )
 {
+	//Msg("Force drop");
 	CloseElements();
 	DetachObject();
 	StopEffects();
@@ -3683,6 +3684,7 @@ void CWeaponPhysCannon::StopLoopingSounds()
 //-----------------------------------------------------------------------------
 void CWeaponPhysCannon::DestroyEffects( void )
 {
+	//Msg("Destroy effects");
 	//Turn off main glow
 	if ( m_hCenterSprite != NULL )
 	{
@@ -3732,6 +3734,7 @@ void CWeaponPhysCannon::DestroyEffects( void )
 //-----------------------------------------------------------------------------
 void CWeaponPhysCannon::StopEffects( bool stopSound )
 {
+	//Msg("stop effects");
 	// Turn off our effect state
 	DoEffect( EFFECT_NONE );
 
@@ -3751,7 +3754,7 @@ void CWeaponPhysCannon::StopEffects( bool stopSound )
 	{
 		if ( m_hBeams[i] != NULL )
 		{
-			m_hBeams[i]->SetBrightness( 0 );
+			m_hBeams[i]->SetBrightness(0);
 		}
 	}
 
@@ -3786,6 +3789,7 @@ void CWeaponPhysCannon::StopEffects( bool stopSound )
 static ConVar physcannon_use_blue_sprite( "physcannon_use_blue_sprite", "0" );
 void CWeaponPhysCannon::StartEffects( void )
 {
+	//Msg("Start effects");
 	CBasePlayer *pOwner = ToBasePlayer( GetOwner() );
 	if ( pOwner == NULL )
 		return;
@@ -3794,10 +3798,11 @@ void CWeaponPhysCannon::StartEffects( void )
 
 	int i;
 	float flScaleFactor = SpriteScaleFactor();
-	CBaseEntity *pBeamEnt = pOwner->GetViewModel();
+	//CBaseEntity *pBeamEnt = pOwner->GetViewModel();
 
 	// Create the beams
-	for ( i = 0; i < NUM_BEAMS; i++ )
+	//theaperturecat - temporary fix
+	/*for (i = 0; i < NUM_BEAMS; i++)
 	{
 		if ( m_hBeams[i] )
 			continue;
@@ -3830,7 +3835,7 @@ void CWeaponPhysCannon::StartEffects( void )
 		m_hBeams[i]->SetBrightness( 128 );
 		m_hBeams[i]->SetWidth( 0 );
 		m_hBeams[i]->SetEndWidth( random->RandomFloat( 2, 4 ) );
-	}
+	}*/
 
 	//Create the glow sprites
 	for ( i = 0; i < NUM_SPRITES; i++ )
@@ -3933,6 +3938,7 @@ void CWeaponPhysCannon::StartEffects( void )
 //-----------------------------------------------------------------------------
 void CWeaponPhysCannon::DoEffectClosed( void )
 {
+	//Msg("Do effect closed");
 	float flScaleFactor = SpriteScaleFactor();
 
 	// Turn off the center sprite
@@ -3986,6 +3992,7 @@ void CWeaponPhysCannon::DoEffectClosed( void )
 //-----------------------------------------------------------------------------
 void CWeaponPhysCannon::DoMegaEffectClosed( void )
 {
+	//Msg("Do mega effect closed");
 	float flScaleFactor = SpriteScaleFactor();
 
 	// Turn off the center sprite
@@ -4039,6 +4046,7 @@ void CWeaponPhysCannon::DoMegaEffectClosed( void )
 //-----------------------------------------------------------------------------
 void CWeaponPhysCannon::DoEffectReady( )
 {
+	//Msg("Do effect ready");
 	float flScaleFactor = SpriteScaleFactor();
 
 	//Turn on the center sprite
@@ -4093,6 +4101,7 @@ void CWeaponPhysCannon::DoEffectReady( )
 //-----------------------------------------------------------------------------
 void CWeaponPhysCannon::DoEffectHolding( )
 {
+	//Msg("Do effect holding");
 	float flScaleFactor = SpriteScaleFactor();
 
 	// Turn off the center sprite
@@ -4257,6 +4266,7 @@ void CWeaponPhysCannon::DoMegaEffectLaunch( Vector *pos )
 //-----------------------------------------------------------------------------
 void CWeaponPhysCannon::DoMegaEffectHolding( void )
 {
+	//Msg("Do mega effect holding");
 	float flScaleFactor = SpriteScaleFactor();
 
 	// Turn off the center sprite
@@ -4302,6 +4312,7 @@ void CWeaponPhysCannon::DoMegaEffectHolding( void )
 //-----------------------------------------------------------------------------
 void CWeaponPhysCannon::DoMegaEffectReady( void )
 {
+	//Msg("Do mega effect ready");
 	float flScaleFactor = SpriteScaleFactor();
 
 	//Turn on the center sprite

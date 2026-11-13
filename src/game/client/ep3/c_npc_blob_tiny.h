@@ -25,7 +25,7 @@ public:
 	virtual IClientModelRenderable*	GetClientModelRenderable() { return NULL; }
 	virtual void OnDataChanged( DataUpdateType_t type );
 	virtual void ClientThink( void );
-	virtual int DrawModel( int flags );
+	virtual int DrawModel( int flags, const RenderableInstance_t& instance);
 	virtual ShadowType_t ShadowCastType() { return SHADOWS_RENDER_TO_TEXTURE_DYNAMIC_CUSTOM; }
 
 	RenderGroup_t GetRenderGroup( void ) 

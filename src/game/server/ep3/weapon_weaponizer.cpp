@@ -1613,16 +1613,16 @@ public:
 	bool	ShouldDisplayHUDHint() { return true; }
 
 	void ShootDefault( attackstate_t eState );
-	void ShootSphere( attackstate_t eState );
+	void ShootSphere( attackstate_t eState );//theaperturecat unused?
 	void ShootFlak( attackstate_t eState );
-	void ShootFlakGrenade( attackstate_t eState );
-	void ShootZapFlak( attackstate_t eState );
-	void ShootZapFlakBeam( attackstate_t eState );
-	void ShootFlamingFlak( attackstate_t eState );
+	void ShootFlakGrenade( attackstate_t eState );//theaperturecat unused?
+	void ShootZapFlak( attackstate_t eState );//theaperturecat unused?
+	void ShootZapFlakBeam( attackstate_t eState );//theaperturecat unused?
+	void ShootFlamingFlak( attackstate_t eState );//theaperturecat unused?
 	void ShootFlames( attackstate_t eState );
 	void ShootElectrical( attackstate_t eState );
-	void ShootFlamingSphere( attackstate_t eState ); //Fusion test
-	void ShootZapSphere( attackstate_t eState );
+	void ShootFlamingSphere( attackstate_t eState ); //Fusion test //theaperturecat unused?
+	void ShootZapSphere( attackstate_t eState ); //theaperturecat unused?
 	void ShootLiquidFuel( attackstate_t eState );
 	void ShootLiquidWater( attackstate_t eState );
 

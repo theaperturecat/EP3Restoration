@@ -39,7 +39,7 @@ particles_manifest
 	"file"		"particles/environment_dx80.pcf"
 	"file"		"particles/environment_unused.pcf"
 	"file"		"particles/ep1_fx.pcf"
-	"file"		"particles/error.pcf"
+	//"file"		"particles/error.pcf" temp disable this to stop annoying missing effects
 	"file"		"particles/explosion.pcf"
 	"file"		"particles/finale_fx.pcf"
 	"file"		"particles/finale_fx_dx80.pcf"

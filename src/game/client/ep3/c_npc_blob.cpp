@@ -159,7 +159,7 @@ int C_NPC_Blob::DrawModel( int flags, const RenderableInstance_t &instance )
 	// Draw the brain
 	if ( cl_blob_draw_brain.GetBool() )
 	{
-		SetUpCoreDrawMaterial();	
+		SetUpDrawMaterial();
 		SetUpCoreParticleVector();
 
 		if ( !IsErrorMaterial( m_pMaterial ) )

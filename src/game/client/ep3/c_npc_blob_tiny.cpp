@@ -268,7 +268,7 @@ void C_NPC_BlobTiny::RenderBlob( int nFlags )
 // Input  : flags - 
 // Output : int
 //-----------------------------------------------------------------------------
-int C_NPC_BlobTiny::DrawModel( int flags )
+int C_NPC_BlobTiny::DrawModel( int flags, const RenderableInstance_t& instance)
 {
 	if ( GetModelInstance() == MODEL_INSTANCE_INVALID )
 	{

@@ -1,7 +1,7 @@
 "GameInfo"
 {
-	game 		"Half Life 2: Episode 3"
-	title 		"Episode 3"
+	game 		"EP3RESTORATION"
+	title 		"EP3RESTORATION"
 	"type"		"singleplayer_only"
 	GameData	"ep3.fgd"
 	InstancePath "tilegen/instances/"

@@ -1,1 +1,1 @@
-@"C:\Program Files (x86)\Steam\steamapps\common\Alien Swarm\swarm.exe" -console -windowed -game %cd% -override_vpk -autoexec -developer -dev
+@"C:\Program Files (x86)\Steam\steamapps\common\Alien Swarm\swarm.exe" -console -windowed -game %cd% -override_vpk -autoexec -developer -dev +mat_queue_mode 0

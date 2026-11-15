@@ -8405,6 +8405,15 @@ void CC_Ent_Create( const CCommand& args )
 		else
 		{
 			entity->Precache();
+
+			// Pass in any additional parameters.
+			for (int i = 2; i + 1 < args.ArgC(); i += 2)
+			{
+				const char* pKeyName = args[i];
+				const char* pValue = args[i + 1];
+				entity->KeyValue(pKeyName, pValue);
+			}
+
 			DispatchSpawn(entity);
 			// Now attempt to drop into the world
 			CBasePlayer* pPlayer = UTIL_GetCommandClient();

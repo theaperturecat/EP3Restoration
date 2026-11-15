@@ -11,6 +11,211 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+
+
+
+
+
+
+//theaperturecat - to be more like the original code, i have ported the old proj_base here
+
+//=============================================================================
+//
+// Generic projectile
+//
+class CBaseProjectile_old : public CBaseAnimating
+{
+	DECLARE_CLASS(CBaseProjectile_old, CBaseAnimating);
+public:
+	DECLARE_DATADESC();
+
+	void	Spawn(void);
+	void	Precache(void);
+
+	static CBaseProjectile_old* Create(baseprojectilecreate_t& pCreate);
+
+	void			SetDamage(float flDamage) { m_flDamage = flDamage; }
+	void			SetDamageScale(float& flScale) { m_flDamageScale = flScale; }
+	void			SetDamageType(int iType) { m_iDamageType = iType; }
+
+private:
+	// Damage
+	virtual float	GetDamage() { return m_flDamage; }
+	virtual float	GetDamageScale(void) { return m_flDamageScale; }
+	virtual int		GetDamageType(void) { return m_iDamageType; }
+
+	unsigned int	PhysicsSolidMaskForEntity(void) const;
+
+	virtual void	ProjectileTouch(CBaseEntity* pOther);
+	void			FlyThink(void);
+
+protected:
+	float			m_flDamage;
+	int				m_iDamageType;
+	float			m_flDamageScale;
+};
+
+
+//====== Copyright © 1996-2005, Valve Corporation, All rights reserved. =======
+//
+// Purpose: 
+//
+//=============================================================================
+
+#include "cbase.h"
+#include "baseprojectile.h"
+
+BEGIN_DATADESC(CBaseProjectile_old)
+DEFINE_FIELD(m_flDamage, FIELD_FLOAT),
+DEFINE_FIELD(m_iDamageType, FIELD_INTEGER),
+DEFINE_FIELD(m_flDamageScale, FIELD_FLOAT),
+
+DEFINE_FUNCTION(ProjectileTouch),
+DEFINE_THINKFUNC(FlyThink),
+END_DATADESC()
+
+LINK_ENTITY_TO_CLASS(proj_base, CBaseProjectile_old);
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CBaseProjectile_old::Spawn(void)
+{
+	Precache();
+
+	SetModel(STRING(GetModelName()));
+
+	SetSolid(SOLID_BBOX);
+	SetMoveType(MOVETYPE_FLYGRAVITY, MOVECOLLIDE_FLY_CUSTOM);
+	AddFlag(FL_OBJECT);
+
+	UTIL_SetSize(this, -Vector(1.0f, 1.0f, 1.0f), Vector(1.0f, 1.0f, 1.0f));
+
+	// Setup attributes.
+	SetGravity(0.001f);
+	m_takedamage = DAMAGE_NO;
+
+	// Setup the touch and think functions.
+	SetTouch(&CBaseProjectile_old::ProjectileTouch);
+	SetThink(&CBaseProjectile_old::FlyThink);
+	SetNextThink(gpGlobals->curtime);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CBaseProjectile_old::Precache(void)
+{
+	BaseClass::Precache();
+
+	PrecacheModel(STRING(GetModelName()));
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+CBaseProjectile_old* CBaseProjectile_old::Create(baseprojectilecreate_t& pCreate)
+{
+	CBaseProjectile_old* pProjectile = static_cast<CBaseProjectile_old*>(CBaseEntity::CreateNoSpawn("proj_base", pCreate.vecOrigin, vec3_angle, pCreate.pOwner));
+	if (!pProjectile)
+		return NULL;
+
+	pProjectile->SetModelName(pCreate.iszModel);
+	pProjectile->SetDamage(pCreate.flDamage);
+	pProjectile->SetDamageType(pCreate.iDamageType);
+	pProjectile->SetDamageScale(pCreate.flDamageScale);
+	pProjectile->SetAbsVelocity(pCreate.vecVelocity);
+
+	// Setup the initial angles.
+	QAngle angles;
+	VectorAngles(-pCreate.vecVelocity, angles);
+	pProjectile->SetAbsAngles(angles);
+
+	// Spawn & Activate
+	DispatchSpawn(pProjectile);
+	pProjectile->Activate();
+
+	return pProjectile;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose:
+//-----------------------------------------------------------------------------
+unsigned int CBaseProjectile_old::PhysicsSolidMaskForEntity(void) const
+{
+	return BaseClass::PhysicsSolidMaskForEntity() | CONTENTS_HITBOX;
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: 
+//-----------------------------------------------------------------------------
+void CBaseProjectile_old::ProjectileTouch(CBaseEntity* pOther)
+{
+	// Verify a correct "other."
+	Assert(pOther);
+	if (!pOther->IsSolid() || pOther->IsSolidFlagSet(FSOLID_VOLUME_CONTENTS))
+		return;
+
+	// Handle hitting skybox (disappear).
+	const trace_t* pTrace = &CBaseEntity::GetTouchTrace();
+	trace_t* pNewTrace = const_cast<trace_t*>(pTrace);
+
+	if (pTrace->surface.flags & SURF_SKY)
+	{
+		UTIL_Remove(this);
+		return;
+	}
+
+	CTakeDamageInfo info;
+	info.SetAttacker(GetOwnerEntity());
+	info.SetInflictor(this);
+	info.SetDamage(GetDamage());
+	info.SetDamageType(GetDamageType());
+	CalculateMeleeDamageForce(&info, GetAbsVelocity(), GetAbsOrigin(), GetDamageScale());
+
+	Vector dir;
+	AngleVectors(GetAbsAngles(), &dir);
+
+	pOther->DispatchTraceAttack(info, dir, pNewTrace);
+	ApplyMultiDamage();
+
+	UTIL_Remove(this);
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Orient the projectile along its velocity
+//-----------------------------------------------------------------------------
+void CBaseProjectile_old::FlyThink(void)
+{
+	QAngle angles;
+	VectorAngles(-(GetAbsVelocity()), angles);
+	SetAbsAngles(angles);
+	SetNextThink(gpGlobals->curtime + 0.1f);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ConVar	sk_wpnscanner_health( "sk_wpnscanner_health","30");
 ConVar	sk_wpnscanner_proj_dmg( "sk_wpnscanner_proj_dmg","5");
 ConVar	sk_wpnscanner_proj_speed( "sk_wpnscanner_proj_speed","1300");
@@ -200,8 +405,7 @@ void CNPC_WpnScanner::RunTask( const Task_t *pTask )
 			newProj.flDamage = sk_wpnscanner_proj_dmg.GetFloat();
 			newProj.iDamageType = DMG_ENERGYBEAM;
 			newProj.flDamageScale = 1.0;
-			CBaseProjectile::Create( newProj );
-
+			CBaseProjectile_old::Create( newProj );
 			break;
 		}
 

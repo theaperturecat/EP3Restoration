@@ -2938,30 +2938,35 @@ void CWeaponWeaponizer::ShootFlames( attackstate_t eState )
 		tr.m_pEnt->TakeDamage( CTakeDamageInfo( this, pOwner, weaponizer_fire_damage.GetInt(), DMG_BURN | DMG_DIRECT ) );
 
 		CBaseAnimating *pEnt = tr.m_pEnt->GetBaseAnimating();
+		
+		//This code is bad - theaperturecat
 
-		CAI_BaseNPC *pNPC = pEnt->MyNPCPointer();
-		if ( pNPC && pNPC->AllowedToIgnite() )
+		if (pEnt != nullptr)
 		{
-			float flMod = 1.0f;
-						
-			if ( pEnt->IsNPC() == true )
+			CAI_BaseNPC* pNPC = pEnt->MyNPCPointer();
+			if (pNPC && pNPC->AllowedToIgnite())
 			{
+				float flMod = 1.0f;
+
+				if (pEnt->IsNPC() == true)
+				{
+					// WEAPONIZER TODO: burning objects
+					//if ( pEnt->ShouldBurnLonger() == false )
+					//{
+					//	flMod = random->RandomFloat( 0.15f, 0.25f );
+					//}
+				}
+
+				float flLength = (float)(pEnt->GetMaxHealth() * flMod) / FLAME_DIRECT_DAMAGE_PER_SEC;
+
 				// WEAPONIZER TODO: burning objects
-				//if ( pEnt->ShouldBurnLonger() == false )
+				//if ( pEnt->ShouldBurnLonger() == true && flLength < 15 )
 				//{
-				//	flMod = random->RandomFloat( 0.15f, 0.25f );
+				//	flLength = 15;
 				//}
+
+				pEnt->Ignite(flLength, false);
 			}
-	
-			float flLength = (float)(pEnt->GetMaxHealth() * flMod) / FLAME_DIRECT_DAMAGE_PER_SEC;
-
-			// WEAPONIZER TODO: burning objects
-			//if ( pEnt->ShouldBurnLonger() == true && flLength < 15 )
-			//{
-			//	flLength = 15;
-			//}
-
-			pEnt->Ignite( flLength, false );
 		}
 	}
 }

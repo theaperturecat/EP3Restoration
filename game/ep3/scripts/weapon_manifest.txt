@@ -7,7 +7,8 @@ weapon_manifest
 	"file"		"scripts/weapon_gauss.txt"
 	"file"		"scripts/weapon_egon.txt"
 	"file"		"scripts/weapon_flamethrower.txt"
-	"file"		"scripts/weapon_pipebomblauncherr.txt"
+	"file"		"scripts/weapon_pipebomblauncher.txt"
+	"file"		"scripts/weapon_teleport.txt"
 
 	// episodic
 	"file"		"scripts/weapon_alyxgun.txt"

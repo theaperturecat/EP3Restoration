@@ -701,6 +701,12 @@ void CRagdollProp::InitRagdoll( const Vector &forceVector, int forceBone, const 
 	params.pGameData = static_cast<void *>( static_cast<CBaseEntity *>(this) );
 	params.modelIndex = GetModelIndex();
 	params.pCollide = modelinfo->GetVCollide( params.modelIndex );
+
+
+	const char* modelName =
+		modelinfo->GetModelName(modelinfo->GetModel(params.modelIndex));
+	Msg("Loading %s\n",modelName);
+
 	params.pStudioHdr = GetModelPtr();
 	params.forceVector = forceVector;
 	params.forceBoneIndex = forceBone;

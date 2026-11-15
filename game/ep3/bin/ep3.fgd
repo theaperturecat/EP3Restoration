@@ -41,6 +41,7 @@
 		1 : "Leaper"
 		2 : "Spitter"
 		3 : "Spawner"
+		4 : "DDE Version"
 	]
 	particlecount(integer) : "Particle Count" : 100 : "How many particles to use to simulate the blob."
 	brainParticleCount(integer) : "Brain Particle Count" : 6 : "How many brain particles does this blob have (must be <= than the particle count)?"

@@ -26,12 +26,12 @@ WeaponData
 		"reload"			"Weapon_SMG1.Reload"
 		"reload_npc"			"Weapon_SMG1.NPC_Reload"
 		"empty"				"Weapon_SMG1.Empty"
-		"single_shot"			"Weapon_SMG1.Burst"
-		"single_shot_npc"		"Weapon_SMG1.NPC_Single"
+		"single_shot"			"NPC_Hunter.FlechetteShoot"
+		"single_shot_npc"		"NPC_Hunter.FlechetteShoot"
 		"special1"			"Weapon_SMG1.Special1"
 		"special2"			"Weapon_SMG1.Special2"
 		"double_shot"			"Weapon_SMG1.Double"
-		"burst"				"Weapon_SMG1.Burst"
+		"burst"				"NPC_Hunter.FlechetteShoot"
 	}
 
 	// Weapon Sprite data is loaded by the Client DLL.

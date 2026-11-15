@@ -10,6 +10,7 @@ Guess what: The episode 3 codebase leaked.
 * Most things working (but not all, I only has 2 hours to make all this today!)
 * All discovered episode 3 assets (not many)
 * This code also works as a HL2 port to Alien Swarm 
+* HL2 assets are kinda broken - this will be fixed very soon
 
 ## Running
 1. Install Alien Swarm
@@ -20,7 +21,6 @@ Guess what: The episode 3 codebase leaked.
 6. Run the game via run_client.bat
 
 ## Guide to usage
-
 To start, load the first map in chapter select, ep3_testroom.
 
 ### Special suit abilities
@@ -45,15 +45,12 @@ These behave like their versions in Half Life Source.
 
 ## TODO
 * Make Test maps - join discord
-* Fix blob rendering
-* Improve icegun stability
 * Remake models and assets
-* Fix blob mines and tiny blob rendering
-* Fix cubemaps
 * Remake particles
-* Fix weaponizer particles
 * Research weaponizer
 * Fix map
+* Fix hl2 assets
+* Fix gravity gun - why is it behaving so weirdly
 * Fix a lot of things
 
 ## Credits
@@ -62,4 +59,4 @@ These behave like their versions in Half Life Source.
 * Wonderland War - For getting a recreation of the Episode 3 Weaponizer model made
 * Valve - For making a great game, even if they did abandon it.
 * OddDoc - Physics parameter file (that was a pain to work out, good thing he remade it) and blob materials
-* Steryo Yamada - Tutorial map
+* Steryo Yamada - Tutorial map and title fixes

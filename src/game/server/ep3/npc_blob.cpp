@@ -1100,6 +1100,12 @@ void CNPC_Blob::Spawn( void )
 		SetClassname( "npc_blob" );
 		m_nActiveParticles = ( BLOB_SIZE_LARGE + BLOB_SIZE_MEDIUM ) / 2;
 	}
+	else if (m_nActiveParticles == 0)
+	{
+		Msg("Please spawn in blob with ent_create or if you have made this in hammer, use the ep3.fgd file!!!\n");
+		Msg("Setting particles to default: 100\n");
+		m_nActiveParticles = 100;
+	}
 
 	m_nMaxParticleCount = m_nActiveParticles;
 
@@ -1128,6 +1134,18 @@ void CNPC_Blob::Spawn( void )
 		m_bCanSpit = true;
 		m_bCanRegenerate = m_bCanShakeBlobs = m_bCanLeap = m_bCanTentacleAttack = m_bCanSpawnRegenerators = false;
 		m_flMaxArmorHealth = m_flArmorHealth = sv_blob_health.GetFloat();
+		break;
+	case BLOB_TYPE_DDE:
+		m_bCanShakeBlobs = false;
+		m_bCanTentacleAttack = false;
+		m_bCanSpit = false;
+		m_bCanLeap = false;
+		m_bCanSpawnRegenerators = false;
+		m_bCanRegenerate = false;
+
+		m_flMaxArmorHealth = m_flArmorHealth = sv_blob_health.GetFloat();
+
+		m_BlobType = BLOB_TYPE_GENERIC;
 		break;
 	}
 								 

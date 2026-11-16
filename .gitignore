@@ -22,7 +22,7 @@ ipch
 *.vcxproj
 *.vpc_crc
 *.sln
-*.res
+#*.res
 *.pdb
 .vs/
 Release*/

@@ -1,7 +1,8 @@
 "GameInfo"
 {
 	game 		"EP3RESTORATION"
-	title 		"EP3RESTORATION"
+	title         "HALF-LIFE'"
+	title2        "ep3 restoration"
 	"type"		"singleplayer_only"
 	GameData	"ep3.fgd"
 	InstancePath "tilegen/instances/"
@@ -16,9 +17,21 @@
 		"SearchPaths"
 		{
 			"Game"	"|gameinfo_path|."
-			"Game"	"E:\valve_asw_content\ep2_workshop"
-			"Game"	"E:\valve_asw_content\episodic_workshop"
-			"Game"	"E:\valve_asw_content\hl2"
+
+			"Game"	"|gameinfo_path|./valve_assets_converted/hl2_pre_anniversary_update_maps"
+
+			"Game"  "|gameinfo_path|./valve_assets_converted/ep2_v49_models"
+			"Game"  "|gameinfo_path|./valve_assets_converted/ep1_v49_models"
+			"Game"  "|gameinfo_path|./valve_assets_converted/hl2_v49_models"
+			"Game"  "|gameinfo_path|./valve_assets_converted/ep2/ep2_pak"
+			"Game"  "|gameinfo_path|./valve_assets_converted/ep2"
+			"Game"  "|gameinfo_path|./valve_assets_converted/episodic/ep1_pak"
+			"Game"  "|gameinfo_path|./valve_assets_converted/episodic"
+			"Game"	"|gameinfo_path|./valve_assets_converted/hl2/hl2_misc"
+			"Game"	"|gameinfo_path|./valve_assets_converted/hl2/hl2_sound_misc"
+			"Game"	"|gameinfo_path|./valve_assets_converted/hl2/hl2_sound_vo_english"
+			"Game"	"|gameinfo_path|./valve_assets_converted/hl2/hl2_textures"
+			"Game"	"|gameinfo_path|./valve_assets_converted/hl2"
 
 			"Game"	"C:\Program Files (x86)\Steam\steamapps\common\Alien Swarm\swarm_base"
 			"Game"	"C:\Program Files (x86)\Steam\steamapps\common\Alien Swarm\platform"

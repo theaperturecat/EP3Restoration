@@ -270,6 +270,7 @@ $Project "Server (EP3)"
 			$File	"hl2\weapon_smg1.cpp"
 
 			$File	"hl2\npc_cranedriver.cpp"
+			$File	"hl2\npc_monk.cpp"
 
 			$File	"episodic\weapon_striderbuster.cpp"
 			$File	"episodic\weapon_striderbuster.h"

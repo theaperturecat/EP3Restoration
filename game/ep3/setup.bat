@@ -129,21 +129,27 @@ echo ==========================================
 echo Checking Python installation...
 echo ==========================================
 
-where python >nul 2>&1
+
+python -c "import sys; exit(0 if sys.version_info.major == 3 else 1)" >nul 2>&1
 if errorlevel 1 (
-    where py >nul 2>&1
+    python3 -c "import sys; exit(0 if sys.version_info.major == 3 else 1)" >nul 2>&1
     if errorlevel 1 (
-        echo ERROR: Python is not installed.
-        echo Please install Python 3 and try again.
-        pause
-        exit /b 1
+        py -3 -c "import sys; exit(0 if sys.version_info.major == 3 else 1)" >nul 2>&1
+        if errorlevel 1 (
+            echo ERROR: Python is not installed.
+            echo Please install Python 3 and try again.
+            pause
+            exit /b 1
+        )
+        set "PYTHON=py -3"
+    ) else (
+        set "PYTHON=python3"
     )
-    set "PYTHON=py"
 ) else (
     set "PYTHON=python"
 )
 
-echo Python found:
+echo Python command '%PYTHON%' found.
 %PYTHON% --version
 
 echo.

@@ -3,10 +3,11 @@
 
 Conversion paths:
     * Episode One / Source-2004 v44: a dedicated binary parser validates the
-      legacy studio header, bones, procedural records, local animation chains,
-      IK rules, sequences, nested tables, and all referenced ranges. The writer
-      translates legacy-only descriptor/header slots to their modern v49
-      meanings while preserving all geometry, animation payloads, and offsets.
+      legacy studio header, bones, facial flex/eyeball data, procedural records,
+      local animation chains, IK rules, sequences, nested tables, and referenced
+      ranges. The writer translates legacy-only slots (including the v49 flex
+      vertex-animation type discriminator) while preserving vertex deltas,
+      geometry, animation payloads, and offsets.
     * Modern v45-v48: byte-preserving MDL conversion applies Valve's versioned
       animation/cache fixups, then updates the version. Companion VTX v7 files
       are expanded from legacy headers to the full Alien Swarm v49 layout.
@@ -1445,6 +1446,16 @@ LEGACY_V44_ANIM_RAWROT = 0x02
 LEGACY_V44_ANIM_ANIMPOS = 0x04
 LEGACY_V44_ANIM_ANIMROT = 0x08
 
+# These records keep their sizes between the Episode One v44 and v49 studio
+# layouts. Their tail fields do not all keep the same meaning, however.
+LEGACY_V44_BODY_PART_SIZE = 16
+LEGACY_V44_MODEL_SIZE = 148
+LEGACY_V44_MESH_SIZE = 116
+LEGACY_V44_FLEX_SIZE = 60
+LEGACY_V44_EYEBALL_SIZE = 172
+LEGACY_V44_VERTANIM_SIZE = 16
+V49_WRINKLE_VERTANIM_SIZE = 18
+
 
 @_dataclass
 class EpisodeOneV44Report:
@@ -1454,6 +1465,13 @@ class EpisodeOneV44Report:
     ik_rules: int
     procedural_bones: int
     animation_tracks: int
+    flexes: int
+    flex_vertices: int
+    eyeballs: int
+    mouths: int
+    flex_type_fields_normalized: int
+    hitbox_name_pointers_rebased: int
+    sequence_anim_refs_outside_local_table: int
     include_models: tuple[str, ...]
     patch_ranges: tuple[tuple[int, int, str], ...]
     patch_values: tuple[tuple[int, bytes, str], ...]
@@ -1679,6 +1697,241 @@ def _inspect_procedural_bones(data: bytes | bytearray, bone_count: int,
     return count
 
 
+def _is_valid_flexdesc_index(value: int, flexdesc_count: int) -> bool:
+    """Flex references use -1 for an absent target; otherwise they are indexes."""
+    return value == -1 or 0 <= value < flexdesc_count
+
+
+def _inspect_legacy_face_model_tree(
+    data: bytes | bytearray,
+    bodypart_count: int,
+    bodypart_index: int,
+    bone_count: int,
+    flexdesc_count: int,
+    expected_version: int,
+    patch_values: list[tuple[int, bytes, str]],
+) -> tuple[int, int, int]:
+    """Validate model/mesh flexes and eyeballs; normalize the v49 flex discriminator.
+
+    Episode One's 60-byte ``mstudioflex_t`` ended in ``unused[7]``. The v49
+    record is still 60 bytes, but reuses the first four bytes of that tail as
+    ``vertanimtype`` plus three padding bytes. In v44 these bytes have no wrinkle
+    discriminator, so they must be written as zero (normal 16-byte vertex
+    animation records) before a v49 engine traverses the flex vertex array.
+
+    The rest of each flex/eyeball record and every vertex-delta payload is left
+    byte-for-byte unchanged. This walker also validates the model-local eye
+    flex references, which the root-table-only legacy parser previously missed.
+    """
+    flex_count = 0
+    flex_vertex_count = 0
+    eyeball_count = 0
+    bodypart_record_offsets = _table_array_for_face_tree(
+        data, bodypart_index, bodypart_count, LEGACY_V44_BODY_PART_SIZE,
+        "body parts"
+    )
+
+    for bodypart_number, bodypart_off in enumerate(bodypart_record_offsets):
+        name_rel = _i32(data, bodypart_off)
+        _relative_string(data, bodypart_off, name_rel,
+                         f"body part {bodypart_number} name", allow_zero=False)
+        model_count = _i32(data, bodypart_off + 4)
+        model_rel = _i32(data, bodypart_off + 12)
+        if model_count < 0 or model_count > 65536:
+            raise ConversionError(
+                f"Body part {bodypart_number} has unreasonable model count {model_count}."
+            )
+        if not model_count:
+            continue
+        model_start = _relative_range(
+            data, bodypart_off, model_rel,
+            model_count * LEGACY_V44_MODEL_SIZE,
+            f"body part {bodypart_number} models", allow_zero=False,
+        )
+
+        for model_number in range(model_count):
+            model_off = model_start + model_number * LEGACY_V44_MODEL_SIZE
+            model_label = f"body part {bodypart_number} model {model_number}"
+            mesh_count, mesh_rel = struct.unpack_from("<ii", data, model_off + 72)
+            if mesh_count < 0 or mesh_count > 65536:
+                raise ConversionError(f"{model_label} has unreasonable mesh count {mesh_count}.")
+            if mesh_count:
+                mesh_start = _relative_range(
+                    data, model_off, mesh_rel,
+                    mesh_count * LEGACY_V44_MESH_SIZE,
+                    f"{model_label} meshes", allow_zero=False,
+                )
+            else:
+                mesh_start = 0
+
+            attachment_count, attachment_rel = struct.unpack_from(
+                "<ii", data, model_off + 92
+            )
+            if attachment_count < 0 or attachment_count > 65536:
+                raise ConversionError(
+                    f"{model_label} has unreasonable attachment count {attachment_count}."
+                )
+            if attachment_count:
+                _relative_range(
+                    data, model_off, attachment_rel, attachment_count * 92,
+                    f"{model_label} attachments", allow_zero=False,
+                )
+
+            eye_count, eye_rel = struct.unpack_from("<ii", data, model_off + 100)
+            if eye_count < 0 or eye_count > 4096:
+                raise ConversionError(f"{model_label} has unreasonable eyeball count {eye_count}.")
+            if eye_count:
+                eye_start = _relative_range(
+                    data, model_off, eye_rel,
+                    eye_count * LEGACY_V44_EYEBALL_SIZE,
+                    f"{model_label} eyeballs", allow_zero=False,
+                )
+                for eye_number in range(eye_count):
+                    eye_off = eye_start + eye_number * LEGACY_V44_EYEBALL_SIZE
+                    eye_label = f"{model_label} eyeball {eye_number}"
+                    # sznameindex is optional in shipped Source models. A zero
+                    # offset means the eyeball has no separate name string; do
+                    # not interpret the start of the record as an unterminated
+                    # name or reject otherwise valid HL2 character models.
+                    _relative_string(
+                        data, eye_off, _i32(data, eye_off),
+                        f"{eye_label} name", allow_zero=True,
+                    )
+                    eye_bone = _i32(data, eye_off + 4)
+                    if eye_bone < 0 or eye_bone >= bone_count:
+                        raise ConversionError(
+                            f"{eye_label} references invalid bone {eye_bone}."
+                        )
+                    # Each eye contains three upper and three lower eyelid control
+                    # flexes, followed by the two actual lid-geometry flexes.
+                    for field, slot_count, field_label in (
+                        (68, 3, "upper lid"),
+                        (80, 3, "lower lid"),
+                        (116, 1, "upper lid geometry"),
+                        (120, 1, "lower lid geometry"),
+                    ):
+                        for slot in range(slot_count):
+                            value = _i32(data, eye_off + field + slot * 4)
+                            if not _is_valid_flexdesc_index(value, flexdesc_count):
+                                raise ConversionError(
+                                    f"{eye_label} {field_label} flex reference {value} "
+                                    f"is outside {flexdesc_count} flex descriptions."
+                                )
+                    non_facs = data[eye_off + 140]
+                    if expected_version >= 44 and non_facs not in (0, 1):
+                        raise ConversionError(
+                            f"{eye_label} has invalid m_bNonFACS byte 0x{non_facs:02X}."
+                        )
+                    if expected_version < 44 and non_facs:
+                        # The flag did not exist in v43. In that experimental
+                        # compatibility mode this byte is legacy reserved data.
+                        patch_values.append((
+                            eye_off + 140, b"\0", f"{eye_label} absent pre-v44 m_bNonFACS flag"
+                        ))
+                    eyeball_count += 1
+
+            for mesh_number in range(mesh_count):
+                mesh_off = mesh_start + mesh_number * LEGACY_V44_MESH_SIZE
+                mesh_label = f"{model_label} mesh {mesh_number}"
+                model_back_rel = _i32(data, mesh_off + 4)
+                if mesh_off + model_back_rel != model_off:
+                    raise ConversionError(
+                        f"{mesh_label} modelindex does not point back to its owning model."
+                    )
+                mesh_vertices = _i32(data, mesh_off + 8)
+                if mesh_vertices < 0 or mesh_vertices > 1_000_000:
+                    raise ConversionError(
+                        f"{mesh_label} has unreasonable vertex count {mesh_vertices}."
+                    )
+                mesh_flex_count, mesh_flex_rel = struct.unpack_from(
+                    "<ii", data, mesh_off + 16
+                )
+                if mesh_flex_count < 0 or mesh_flex_count > 65536:
+                    raise ConversionError(
+                        f"{mesh_label} has unreasonable flex count {mesh_flex_count}."
+                    )
+                if not mesh_flex_count:
+                    continue
+                flex_start = _relative_range(
+                    data, mesh_off, mesh_flex_rel,
+                    mesh_flex_count * LEGACY_V44_FLEX_SIZE,
+                    f"{mesh_label} flex records", allow_zero=False,
+                )
+                for flex_number in range(mesh_flex_count):
+                    flex_off = flex_start + flex_number * LEGACY_V44_FLEX_SIZE
+                    flex_label = f"{mesh_label} flex {flex_number}"
+                    flexdesc = _i32(data, flex_off)
+                    if flexdesc < 0 or flexdesc >= flexdesc_count:
+                        raise ConversionError(
+                            f"{flex_label} references invalid flex description {flexdesc}."
+                        )
+                    targets = struct.unpack_from("<ffff", data, flex_off + 4)
+                    if not all(_math.isfinite(value) for value in targets):
+                        raise ConversionError(f"{flex_label} has a non-finite target weight.")
+                    numverts = _i32(data, flex_off + 20)
+                    vert_rel = _i32(data, flex_off + 24)
+                    flexpair = _i32(data, flex_off + 28)
+                    if numverts < 0 or numverts > 1_000_000:
+                        raise ConversionError(
+                            f"{flex_label} has unreasonable vertex-animation count {numverts}."
+                        )
+                    if flexpair != -1 and not _is_valid_flexdesc_index(flexpair, flexdesc_count):
+                        raise ConversionError(
+                            f"{flex_label} references invalid paired flex description {flexpair}."
+                        )
+
+                    if expected_version == TARGET_VERSION:
+                        vertanim_type = data[flex_off + 32]
+                        if vertanim_type not in (0, 1):
+                            raise ConversionError(
+                                f"{flex_label} has unknown v49 vertanimtype {vertanim_type}."
+                            )
+                        vertanim_size = (
+                            LEGACY_V44_VERTANIM_SIZE if vertanim_type == 0
+                            else V49_WRINKLE_VERTANIM_SIZE
+                        )
+                    else:
+                        # v44 has no vertanimtype; its vertex records are the
+                        # standard 16-byte mstudiovertanim_t form.
+                        vertanim_size = LEGACY_V44_VERTANIM_SIZE
+                        if any(data[flex_off + 32:flex_off + 36]):
+                            patch_values.append((
+                                flex_off + 32, b"\0\0\0\0",
+                                f"{flex_label} legacy unused tail -> v49 normal vertanimtype",
+                            ))
+
+                    if numverts:
+                        vert_start = _relative_range(
+                            data, flex_off, vert_rel, numverts * vertanim_size,
+                            f"{flex_label} vertex-animation data", allow_zero=False,
+                        )
+                        # Check each vertex delta's index against its mesh, but
+                        # do not decode/re-encode the compressed delta payload.
+                        for vert_number in range(numverts):
+                            vertex_index = struct.unpack_from(
+                                "<H", data, vert_start + vert_number * vertanim_size
+                            )[0]
+                            if vertex_index >= mesh_vertices:
+                                raise ConversionError(
+                                    f"{flex_label} vertex delta {vert_number} references "
+                                    f"mesh vertex {vertex_index}, but the mesh has {mesh_vertices}."
+                                )
+                        flex_vertex_count += numverts
+                    flex_count += 1
+
+    return flex_count, flex_vertex_count, eyeball_count
+
+
+def _table_array_for_face_tree(
+    data: bytes | bytearray, index: int, count: int, record_size: int, label: str
+) -> list[int]:
+    """Return validated root-record offsets for the model tree."""
+    if count == 0:
+        return []
+    _checked_range(data, index, count * record_size, label)
+    return [index + i * record_size for i in range(count)]
+
+
 def inspect_episode_one_v44(data: bytes, *, expected_version: int = 44,
                              source_path: Path | None = None) -> EpisodeOneV44Report:
     """Parse and validate the Source-2004 / Episode One studio format.
@@ -1727,6 +1980,8 @@ def inspect_episode_one_v44(data: bytes, *, expected_version: int = 44,
     bone_count, bone_index = arrays["bones"]
     anim_count, anim_index = arrays["local animations"]
     seq_count, seq_index = arrays["local sequences"]
+    bodypart_count, bodypart_index = arrays["body parts"]
+    flexdesc_count, flexdesc_index = arrays["flex descriptions"]
     ik_chain_count, ik_chain_index = arrays["IK chains"]
 
     # Header-level strings, raw arrays, and legacy-only root tail.
@@ -1819,7 +2074,6 @@ def inspect_episode_one_v44(data: bytes, *, expected_version: int = 44,
         if bone < 0 or bone >= bone_count:
             raise ConversionError(f"Attachment {i} references invalid bone {bone}.")
 
-    flexdesc_count, flexdesc_index = arrays["flex descriptions"]
     for i in range(flexdesc_count):
         off = flexdesc_index + i * 4
         _relative_string(data, off, _i32(data, off), f"flex description {i} name", allow_zero=False)
@@ -1842,6 +2096,11 @@ def inspect_episode_one_v44(data: bytes, *, expected_version: int = 44,
             _relative_range(data, off, op_rel, op_count * 8,
                             f"flex rule {i} operations", allow_zero=False)
 
+    flex_count, flex_vertex_count, eyeball_count = _inspect_legacy_face_model_tree(
+        data, bodypart_count, bodypart_index, bone_count, flexdesc_count,
+        expected_version, patch_values,
+    )
+
     for i in range(ik_chain_count):
         off = ik_chain_index + i * 16
         name_rel, _link_type, link_count, link_rel = struct.unpack_from("<iiii", data, off)
@@ -1858,9 +2117,18 @@ def inspect_episode_one_v44(data: bytes, *, expected_version: int = 44,
 
     mouth_count, mouth_index = arrays["mouths"]
     for i in range(mouth_count):
-        bone, = struct.unpack_from("<i", data, mouth_index + i * 20)
+        off = mouth_index + i * 20
+        bone, = struct.unpack_from("<i", data, off)
         if bone < 0 or bone >= bone_count:
             raise ConversionError(f"Mouth {i} references invalid bone {bone}.")
+        forward = struct.unpack_from("<fff", data, off + 4)
+        if not all(_math.isfinite(value) for value in forward):
+            raise ConversionError(f"Mouth {i} has a non-finite forward vector.")
+        flexdesc = _i32(data, off + 16)
+        if not _is_valid_flexdesc_index(flexdesc, flexdesc_count):
+            raise ConversionError(
+                f"Mouth {i} references invalid phoneme flex description {flexdesc}."
+            )
 
     pose_count, pose_index = arrays["local pose parameters"]
     for i in range(pose_count):
@@ -1905,6 +2173,7 @@ def inspect_episode_one_v44(data: bytes, *, expected_version: int = 44,
     patch_ranges: list[tuple[int, int, str]] = []
     animation_tracks = 0
     total_ik_rules = 0
+    sequence_anim_refs_outside_local_table = 0
 
     # Legacy animation descriptor: bbox vectors become modern unused1[6]; the
     # final seven reserved ints became local hierarchy/section/zero-frame fields.
@@ -2021,8 +2290,26 @@ def inspect_episode_one_v44(data: bytes, *, expected_version: int = 44,
                                         f"sequence {i} animation index matrix", allow_zero=False)
             for j in range(blend_entries):
                 anim_num = struct.unpack_from("<h", data, blend_off + j * 2)[0]
-                if anim_num < -1 or (anim_num >= anim_count and anim_count):
-                    raise ConversionError(f"Sequence {i} blend {j} references invalid animation {anim_num}.")
+                if anim_num < -1:
+                    raise ConversionError(
+                        f"Sequence {i} blend {j} has invalid negative animation index {anim_num}."
+                    )
+                if anim_num >= anim_count:
+                    # The serialized sequence matrix stores an animation index,
+                    # not a direct byte pointer. Source's pLocalAnimdesc() clamps
+                    # an out-of-range local index to zero, while a virtual model
+                    # can remap sequence-relative indices into included groups.
+                    # Preserve the stored short exactly; validating it against
+                    # this file's local animation count alone rejects compatible
+                    # legacy content (e.g. HL2's animated breakable Smokestack).
+                    # If the file has no local animations and no included model
+                    # groups at all, however, there is no possible local fallback.
+                    if anim_count == 0 and include_count == 0:
+                        raise ConversionError(
+                            f"Sequence {i} blend {j} references animation {anim_num}, "
+                            "but the model has no local animations or included model groups."
+                        )
+                    sequence_anim_refs_outside_local_table += 1
         movement_rel = _i32(data, off + 64)
         if num_blends and movement_rel:
             _relative_range(data, off, movement_rel, num_blends * LEGACY_V44_MOVEMENT_SIZE,
@@ -2088,6 +2375,14 @@ def inspect_episode_one_v44(data: bytes, *, expected_version: int = 44,
                for start, size, _ in sorted_ranges):
             raise ConversionError(f"Internal parser produced overlapping patch operation: {label}.")
 
+    hitbox_name_pointers_rebased = sum(
+        1 for _offset, _replacement, label in patch_values
+        if "absolute name pointer -> relative" in label
+    )
+    flex_type_fields_normalized = sum(
+        1 for _offset, _replacement, label in patch_values
+        if "legacy unused tail -> v49 normal vertanimtype" in label
+    )
     return EpisodeOneV44Report(
         bones=bone_count,
         animations=anim_count,
@@ -2095,6 +2390,13 @@ def inspect_episode_one_v44(data: bytes, *, expected_version: int = 44,
         ik_rules=total_ik_rules,
         procedural_bones=procedural_count,
         animation_tracks=animation_tracks,
+        flexes=flex_count,
+        flex_vertices=flex_vertex_count,
+        eyeballs=eyeball_count,
+        mouths=mouth_count,
+        flex_type_fields_normalized=flex_type_fields_normalized,
+        hitbox_name_pointers_rebased=hitbox_name_pointers_rebased,
+        sequence_anim_refs_outside_local_table=sequence_anim_refs_outside_local_table,
         include_models=tuple(include_names),
         patch_ranges=tuple(sorted_ranges),
         patch_values=tuple(patch_values),
@@ -2127,9 +2429,17 @@ def write_episode_one_v44_as_v49(source_mdl: Path, input_root: Path,
             f"{report.bones} bones, {report.procedural_bones} procedural bones, "
             f"{report.animations} animations, {report.sequences} sequences, "
             f"{report.ik_rules} IK rules, {report.animation_tracks} compressed tracks; "
-            f"{len(report.patch_ranges)} schema ranges normalized, "
-            f"{len(report.patch_values)} hitbox-name pointers rebased"
+            f"{report.flexes} flex records/{report.flex_vertices} flex vertices, "
+            f"{report.eyeballs} eyeballs, {report.mouths} phoneme mouths; "
+            f"normalized {report.flex_type_fields_normalized} legacy flex-type field(s), "
+            f"{len(report.patch_ranges)} descriptor ranges and "
+            f"{report.hitbox_name_pointers_rebased} hitbox-name pointer(s)"
         )
+        if report.sequence_anim_refs_outside_local_table:
+            message += (
+                f"; preserved {report.sequence_anim_refs_outside_local_table} "
+                "sequence animation index(es) outside the local animation table"
+            )
         if vtx_layout == "alien-swarm" and vtx_stats["files"]:
             message += (f"; upgraded {vtx_stats['files']} VTX file(s) to full Alien Swarm v49 "
                         f"layout ({vtx_stats['groups']} strip groups, {vtx_stats['strips']} strips, "
@@ -2190,10 +2500,18 @@ def write_episode_one_v44_as_v49(source_mdl: Path, input_root: Path,
         f"{report.procedural_bones} procedural bones, {report.animations} animations, "
         f"{report.sequences} sequences, {report.ik_rules} IK rules, "
         f"{report.animation_tracks} compressed tracks; "
-        f"normalized {len(report.patch_ranges)} legacy schema ranges, "
-        f"rebased {len(report.patch_values)} legacy hitbox-name pointer(s); "
-        "geometry/animation payload, checksum and surface properties preserved"
+        f"preserved {report.flexes} flex records/{report.flex_vertices} flex vertices, "
+        f"{report.eyeballs} eyeballs and {report.mouths} phoneme mouths; "
+        f"normalized {report.flex_type_fields_normalized} legacy flex-type field(s), "
+        f"{len(report.patch_ranges)} legacy schema ranges and "
+        f"rebased {report.hitbox_name_pointers_rebased} hitbox-name pointer(s); "
+        "vertex-delta payload, checksum and eye/flex references preserved"
     )
+    if report.sequence_anim_refs_outside_local_table:
+        message += (
+            f"; preserved {report.sequence_anim_refs_outside_local_table} "
+            "sequence animation index(es) outside the local animation table"
+        )
     if vtx_layout == "alien-swarm" and vtx_stats["files"]:
         message += (f"; upgraded {vtx_stats['files']} VTX file(s) to full v49 layout "
                     f"({vtx_stats['groups']} strip groups, {vtx_stats['strips']} strips, "

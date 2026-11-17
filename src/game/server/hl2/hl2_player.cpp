@@ -2133,33 +2133,35 @@ int CHL2_Player::FlashlightIsOn( void )
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-void CHL2_Player::FlashlightTurnOn( void )
+bool CHL2_Player::FlashlightTurnOn(bool playSound)
 {
 	if( m_bFlashlightDisabled )
-		return;
+		return false;
 
 	if ( Flashlight_UseLegacyVersion() )
 	{
 		if( !SuitPower_AddDevice( SuitDeviceFlashlight ) )
-			return;
+			return false;
 	}
 #ifdef HL2_DLL
 	if( !IsSuitEquipped() )
-		return;
+		return false;
 #endif
 
 	AddEffects( EF_DIMLIGHT );
-	EmitSound( "HL2Player.FlashLightOn" );
+	if(playSound)
+		EmitSound( "HL2Player.FlashLightOn" );
 
 	variant_t flashlighton;
 	flashlighton.SetFloat( m_HL2Local.m_flSuitPower / 100.0f );
 	FirePlayerProxyOutput( "OnFlashlightOn", flashlighton, this, this );
+	return true;
 }
 
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-void CHL2_Player::FlashlightTurnOff( void )
+void CHL2_Player::FlashlightTurnOff(bool playSound)
 {
 	if ( Flashlight_UseLegacyVersion() )
 	{
@@ -2168,7 +2170,8 @@ void CHL2_Player::FlashlightTurnOff( void )
 	}
 
 	RemoveEffects( EF_DIMLIGHT );
-	EmitSound( "HL2Player.FlashLightOff" );
+	if(playSound)
+		EmitSound( "HL2Player.FlashLightOff" );
 
 	variant_t flashlightoff;
 	flashlightoff.SetFloat( m_HL2Local.m_flSuitPower / 100.0f );

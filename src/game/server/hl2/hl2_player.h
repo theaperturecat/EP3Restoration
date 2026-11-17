@@ -233,8 +233,8 @@ public:
 	// Flashlight Device
 	void				CheckFlashlight( void );
 	int					FlashlightIsOn( void );
-	void				FlashlightTurnOn( void );
-	void				FlashlightTurnOff( void );
+	virtual bool				FlashlightTurnOn(bool playSound = false);
+	virtual void				FlashlightTurnOff(bool playSound = false);
 	bool				IsIlluminatedByFlashlight( CBaseEntity *pEntity, float *flReturnDot );
 	void				SetFlashlightPowerDrainScale( float flScale ) { m_flFlashlightPowerDrainScale = flScale; }
 

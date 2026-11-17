@@ -28,7 +28,7 @@ static ConVar gas_pump_range( "gas_pump_range", "300" );
 #define GAS_PUMP_MAXS							Vector(  30,  30, 50 )
 
 #define GAS_PUMP_MODEL							"models/gaspump/gaspump001a.mdl"
-#define GAS_PUMP_CABLE_MATERIAL					"cable/cable_lit.vmt"//"cable/new_cable_lit"
+#define GAS_PUMP_CABLE_MATERIAL					"cable/cable_lit"//"cable/new_cable_lit"
 #define GAS_PUMP_FUEL_PLAYER_THINK_CONTEXT		"BoostPlayerThink"
 #define GAS_PUMP_FUEL_PLAYER_THINK_INTERVAL	0.1f
 

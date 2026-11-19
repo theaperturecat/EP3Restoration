@@ -131,6 +131,9 @@ const int WEAPONIZER_NUM_SECONDARY_MATERIALS = ( WEAPONIZER_NUM_MATERIALS - WEAP
 #define	MEGACANNON_MODEL "models/weapons/v_superphyscannon.mdl"
 #define	MEGACANNON_SKIN	1
 
+//Enable fusion mode prototype test - FIXME
+#define FUSION_MODE
+
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -1910,6 +1913,47 @@ static WeaponParams_t s_LiquidWater =
 	&CWeaponWeaponizer::ShootLiquidWater,
 };
 
+
+
+#ifdef FUSION_MODE
+// Fusion shots consume one unit from each ammo channel. The normal weapon
+// profiles above remain independent; these profiles are selected only while
+// fusion mode is enabled and a supported pair of materials is loaded.
+#define WEAPONIZER_FUSION_PARAMS(shootFunc) \
+{ \
+	false, 1, 1, 0.5f, \
+	1.0f, 1.0f, 0.0f, 0.0f, \
+	-1, -1, true, \
+	s_szEmpty, s_szEmpty, s_szEmpty, \
+	&CWeaponWeaponizer::shootFunc \
+}
+
+static WeaponParams_t s_FusionFlamingFlak = WEAPONIZER_FUSION_PARAMS(ShootFlamingFlak);
+static WeaponParams_t s_FusionZapFlak = WEAPONIZER_FUSION_PARAMS(ShootZapFlak);
+static WeaponParams_t s_FusionFlakGrenade = WEAPONIZER_FUSION_PARAMS(ShootFlakGrenade);
+static WeaponParams_t s_FusionSphere = WEAPONIZER_FUSION_PARAMS(ShootSphere);
+static WeaponParams_t s_FusionFlamingSphere = WEAPONIZER_FUSION_PARAMS(ShootFlamingSphere);
+static WeaponParams_t s_FusionZapFlakBeam = WEAPONIZER_FUSION_PARAMS(ShootZapFlakBeam);
+static WeaponParams_t s_FusionZapSphere = WEAPONIZER_FUSION_PARAMS(ShootZapSphere);
+
+#undef WEAPONIZER_FUSION_PARAMS
+
+#endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 static AmmoParams_t s_AmmoParams[WEAPONIZER_NUM_MATERIALS] =
 {
 	// iMaxAmmo, bMassBased, flAmmoPer, bRemove
@@ -2025,6 +2069,14 @@ CWeaponWeaponizer::CWeaponWeaponizer( void )
 
 	m_bWeaponizerState = false;
 	m_iPrimaryAmmoType = m_iSecondaryAmmoType = 0;
+
+#ifdef FUSION_MODE
+	m_bFusionMode = false;
+	m_bChargedFusion = false;
+	m_flFusionChargeTime = 0.0f;
+	m_flNextReloadTime = 0.0f;
+#endif
+
 }
 
 CWeaponWeaponizer::~CWeaponWeaponizer( void )
@@ -3467,7 +3519,26 @@ void CWeaponWeaponizer::SelectWeapon()
 
 	m_weaponParams[WEAPONIZER_PARAM_PRIMARY] = *selectParams[m_iPrimaryAmmoType];
 	m_weaponParams[WEAPONIZER_PARAM_SECONDARY] = *selectParams[m_iSecondaryAmmoType];
+
+#ifdef FUSION_MODE
+	static WeaponParams_t* old_selectParams[3][WEAPONIZER_NUM_PRIMARY_MATERIALS] =
+	{
+
+{ &s_Default,& s_Default,& s_Default,& s_Default,& s_Default },
+
+		// Fuel secondary material.
+{ &s_Default,& s_FusionFlamingFlak,& s_FusionZapFlak,& s_FusionFlakGrenade,& s_FusionSphere },
+
+		// Water secondary material.
+{ &s_Default,& s_FusionFlamingSphere,& s_FusionZapFlakBeam,& s_Default,& s_FusionZapSphere },
+	};
+
+	m_weaponParams[WEAPONIZER_PARAM_FUSION] = *old_selectParams[iSecondary][m_iPrimaryAmmoType];
+
+#else
 	//m_weaponParams[WEAPONIZER_PARAM_FUSION] = *selectParams[iSecondary][m_iPrimaryAmmoType];
+
+#endif
 
 	if ( m_weaponParams[WEAPONIZER_PARAM_PRIMARY].flPrimaryAmmoRegenRate > 0 )
 	{
@@ -3512,40 +3583,95 @@ void CWeaponWeaponizer::PrimaryAttack( attackstate_t eState )
 		}
 		return;
 	}
-
-
-	if ( ( m_iClip1 < m_weaponParams[WEAPONIZER_PARAM_PRIMARY].flPrimaryAmmoBurnRate ) ||
-		 ( m_iClip2 < m_weaponParams[WEAPONIZER_PARAM_PRIMARY].flSecondaryAmmoBurnRate ) )
-	{	 
-		m_bFiringPrimary = false;
-		return;
-	}
-
-	( this->*m_weaponParams[WEAPONIZER_PARAM_PRIMARY].funcShoot )( eState );
-
-	SubtractAmmo( WEAPONIZER_PARAM_PRIMARY );
-
-	// Keep pushing out the timer as long as we're firing.
-	if ( m_weaponParams[WEAPONIZER_PARAM_PRIMARY].flPrimaryAmmoRegenRate )
+#ifdef FUSION_MODE
+	if (m_bFusionMode && m_weaponParams[WEAPONIZER_PARAM_FUSION].bFusion)
 	{
-		m_flNextPrimaryRegenTime = gpGlobals->curtime + m_weaponParams[WEAPONIZER_PARAM_PRIMARY].flPrimaryAmmoRegenRate;
-	}
-
-	if ( m_flNextPrimaryAnimationTime <= gpGlobals->curtime )
-	{
-		if ( m_weaponParams[WEAPONIZER_PARAM_PRIMARY].bContinuous )
+		if ((m_iClip1 < m_weaponParams[WEAPONIZER_PARAM_FUSION].flPrimaryAmmoBurnRate) ||
+			(m_iClip2 < m_weaponParams[WEAPONIZER_PARAM_FUSION].flSecondaryAmmoBurnRate))
 		{
-			SendWeaponAnim( ACT_VM_PRIMARYATTACK );
-		}
-		else
-		{
-			SendWeaponAnim( ACT_VM_SECONDARYATTACK );
+			m_bFiringPrimary = false;
+			return;
 		}
 
-		m_flNextPrimaryAnimationTime = gpGlobals->curtime + SequenceDuration();
-	}
+		if (m_flFusionChargeTime <= 0.0f)
+		{
+			float flChargeTime = MAX(weaponizer_fusion_chargeup_time.GetFloat(), 0.01f);
+			m_flFusionChargeTime = gpGlobals->curtime + flChargeTime;
+			m_bChargedFusion = false;
+			m_bFiringPrimary = true;
+			SendWeaponAnim(ACT_VM_PRIMARYATTACK);
+			EmitSound("Weaponizer_FusionChargeup");
+			return;
+		}
+		else if (m_bChargedFusion)
+		{
+			(this->*m_weaponParams[WEAPONIZER_PARAM_FUSION].funcShoot)(eState);
 
-	m_flNextPrimaryAttack = gpGlobals->curtime + m_weaponParams[WEAPONIZER_PARAM_PRIMARY].flRateOfFire;
+			SubtractAmmo(WEAPONIZER_PARAM_FUSION);
+
+			// Keep pushing out the timer as long as we're firing.
+			if (m_weaponParams[WEAPONIZER_PARAM_FUSION].flPrimaryAmmoRegenRate)
+			{
+				m_flNextPrimaryRegenTime = gpGlobals->curtime + m_weaponParams[WEAPONIZER_PARAM_FUSION].flPrimaryAmmoRegenRate;
+			}
+
+			if (m_flNextPrimaryAnimationTime <= gpGlobals->curtime)
+			{
+				if (m_weaponParams[WEAPONIZER_PARAM_FUSION].bContinuous)
+				{
+					SendWeaponAnim(ACT_VM_PRIMARYATTACK);
+				}
+				else
+				{
+					SendWeaponAnim(ACT_VM_SECONDARYATTACK);
+				}
+
+				m_flNextPrimaryAnimationTime = gpGlobals->curtime + SequenceDuration();
+			}
+
+			m_flNextPrimaryAttack = gpGlobals->curtime + m_weaponParams[WEAPONIZER_PARAM_FUSION].flRateOfFire;
+		}
+		else if (gpGlobals->curtime >= m_flFusionChargeTime)
+		{
+			m_bChargedFusion = true;
+		}
+	}
+	else
+#endif
+	{
+		if ((m_iClip1 < m_weaponParams[WEAPONIZER_PARAM_PRIMARY].flPrimaryAmmoBurnRate) ||
+			(m_iClip2 < m_weaponParams[WEAPONIZER_PARAM_PRIMARY].flSecondaryAmmoBurnRate))
+		{
+			m_bFiringPrimary = false;
+			return;
+		}
+
+		(this->*m_weaponParams[WEAPONIZER_PARAM_PRIMARY].funcShoot)(eState);
+
+		SubtractAmmo(WEAPONIZER_PARAM_PRIMARY);
+
+		// Keep pushing out the timer as long as we're firing.
+		if (m_weaponParams[WEAPONIZER_PARAM_PRIMARY].flPrimaryAmmoRegenRate)
+		{
+			m_flNextPrimaryRegenTime = gpGlobals->curtime + m_weaponParams[WEAPONIZER_PARAM_PRIMARY].flPrimaryAmmoRegenRate;
+		}
+
+		if (m_flNextPrimaryAnimationTime <= gpGlobals->curtime)
+		{
+			if (m_weaponParams[WEAPONIZER_PARAM_PRIMARY].bContinuous)
+			{
+				SendWeaponAnim(ACT_VM_PRIMARYATTACK);
+			}
+			else
+			{
+				SendWeaponAnim(ACT_VM_SECONDARYATTACK);
+			}
+
+			m_flNextPrimaryAnimationTime = gpGlobals->curtime + SequenceDuration();
+		}
+
+		m_flNextPrimaryAttack = gpGlobals->curtime + m_weaponParams[WEAPONIZER_PARAM_PRIMARY].flRateOfFire;
+	}
 }
 
 
@@ -4614,6 +4740,10 @@ void CWeaponWeaponizer::ItemPostFrame()
 	else
 	{
 		m_bFiringPrimary = false;
+#ifdef FUSION_MODE
+		m_bChargedFusion = false;//theaperturecat fixme
+		m_flFusionChargeTime = -1;
+#endif
 	}
 
 	if ( pOwner->m_nButtons & IN_ATTACK2 )
@@ -6015,3 +6145,7 @@ WeaponizerMaterialTypes_t CWeaponWeaponizer::GetWeaponizerMaterialType( CBaseEnt
 
 	return WEAPONIZER_MATERIAL_TYPE_NONE;
 }
+
+
+
+

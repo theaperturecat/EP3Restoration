@@ -846,6 +846,10 @@ CBreakableProp::CBreakableProp()
 	
 	// This defaults to on. Most times mapmakers won't specify a punt sound to play.
 	m_bUsePuntSound = true;
+
+
+	//theaperturecat - stupid multiplayer optimizations breaking models, WE ARENT IN MULTIPLAYER
+	m_iPhysicsMode = PHYSICS_MULTIPLAYER_SOLID;
 }
 
 //-----------------------------------------------------------------------------

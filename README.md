@@ -23,7 +23,7 @@ Guess what: The episode 3 codebase leaked.
 6. Run the game via run_client.bat
 
 ## Guide to usage
-To start, load the first map in chapter select, ep3_testroom.
+To start, press SELECT MAP and go into one of the maps in the menu
 
 ### Special suit abilities
 The icegun and teleport gun are both special suit abilities. This means you can select them in weapon select like normal weapons, but you use them with other weapons at the same time. To use these weapons, hold left ALT to fire.
@@ -62,8 +62,9 @@ Report bugs on this github repo under issues, or add them in the discord.
 ## Credits
 * GaijinViking - Discovering the Episode 3 ice texture exists in Dota 2, and helping me find code to decompile.
 * Klaxon - For the blobulator headers
-* Wonderland War - For getting a recreation of the Episode 3 Weaponizer model made
+* Wonderland War - For getting a recreation of the Episode 3 Weaponizer model made, and also for a bonus maps/save game menu fix
 * Valve - For making a great game, even if they did abandon it.
 * OddDoc - Physics parameter file (that was a pain to work out, good thing he remade it) and blob materials
 * Steryo Yamada - Tutorial map and title fixes
 * Infecation - Explained mat_queue_mode 0 can fix a crash with the blob.
+* All the other people who made maps (check the menu)

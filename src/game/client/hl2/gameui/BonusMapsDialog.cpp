@@ -1004,3 +1004,17 @@ void CBonusMapsDialog::OnFileSelected( const char *fullpath )
 	// change the cursor back to normal
 	surface()->SetCursor(dc_user);
 }
+
+//thanks Wonderland War for this fix
+void CBonusMapsDialog::PerformLayout(void)
+{
+	BaseClass::PerformLayout();
+	vgui::ivgui()->AddTickSignal(GetVPanel(), 25);
+}
+
+void CBonusMapsDialog::OnTick(void)
+{
+	// This is such a horrible fix, but it's the only thing that I know of that will fix it
+	m_pGameList->InvalidateLayout();
+	m_pGameList->Repaint();
+}

@@ -50,6 +50,9 @@ private:
 	void RefreshMedalDisplay( BonusMapDescription_t *pMap );
 	void RefreshCompletionPercentage( void );
 
+	void PerformLayout(void);
+	void OnTick(void);
+
 	MESSAGE_FUNC( OnPanelSelected, "PanelSelected" );
 	MESSAGE_FUNC( OnControlModified, "ControlModified" );
 	MESSAGE_FUNC( OnTextChanged, "TextChanged" )

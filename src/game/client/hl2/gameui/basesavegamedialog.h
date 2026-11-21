@@ -71,6 +71,9 @@ protected:
 	void OnKeyCodeTyped( vgui::KeyCode code );
 	void OnKeyCodePressed( vgui::KeyCode code );
 
+	void PerformLayout();
+	void OnTick();
+
 private:
 	MESSAGE_FUNC( OnPanelSelected, "PanelSelected" );
 

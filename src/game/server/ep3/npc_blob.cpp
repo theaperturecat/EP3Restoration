@@ -10489,7 +10489,7 @@ void CNPC_Blob::Merge( CNPC_Blob *pOther )
 		return;		
 
 	// We're the winner, absorb the other blob.
-	int iNumParticlesToTake = pOther->m_pMainGroup->m_members.Count();
+	int iNumParticlesToTake = pOther->m_pMainGroup->m_members.Count(); //why is m_pMainGroup sometimes null for a joining blob, causing a crash? - theaperturecat
 	IPhysicsObject **pTakePhysics = (IPhysicsObject **)stackalloc( sizeof( IPhysicsObject * ) * iNumParticlesToTake );
 	for( int i = 0; i != iNumParticlesToTake; ++i )
 	{

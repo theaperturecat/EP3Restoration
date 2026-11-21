@@ -1,0 +1,25 @@
+"EP3 Testroom"
+{
+"map" "testroom_ep3"
+"comment" "EP3 Testroom by theaperturecat, contains most EP3 mechanics"
+}
+"tut_ep3"
+{
+"map" "tut_ep3"
+"comment" "EP3 Tutorial by Steryo Yamada"
+}
+"advisor_ep3"
+{
+"map" "advisor_ep3"
+"comment" "EP3 Advisor Battle by Steryo Yamada"
+}
+"ep3_arena"
+{
+"map" "ep3_arena"
+"comment" "EP3 Arena by 100C"
+}
+"Particle Benchmark npc_surface Demo"
+{
+"map" "demo_blob"
+"comment" "Official valve demo for the early npc_surface blob version."
+}

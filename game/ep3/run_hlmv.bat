@@ -1,0 +1,1 @@
+@"C:\Program Files (x86)\Steam\steamapps\common\Alien Swarm\bin\hlmv.exe" -game "%cd%" -nop4

@@ -2449,7 +2449,9 @@ void CAI_BaseNPC::StartTask( const Task_t *pTask )
 		
 	case TASK_GET_PATH_TO_LASTPOSITION:
 		{
-			if (!GetNavigator()->SetGoal( m_vecLastPosition ))
+		//theaperturecat - very bad hack here, but it lets npc_go work for the blob
+			bool n = FClassnameIs(this, "npc_blob*") ? GetNavigator()->SetDirectGoal(m_vecLastPosition) : GetNavigator()->SetGoal(m_vecLastPosition);
+			if (!n)
 			{
 				TaskFail(FAIL_NO_ROUTE);
 			}

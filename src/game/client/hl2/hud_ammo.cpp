@@ -448,6 +448,10 @@ protected:
 	{
 		// set whether or not the panel draws based on if we have a weapon that supports secondary ammo
 		C_BasePlayer* player = C_BasePlayer::GetLocalPlayer();
+
+		if (!player)
+			return;
+
 		C_BaseCombatWeapon *wpn = player->GetActiveWeapon();
 		IClientVehicle *pVehicle = player ? player->GetVehicle() : NULL;
 		if (!wpn || !player || pVehicle)

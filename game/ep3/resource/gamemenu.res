@@ -7,16 +7,16 @@
 		"InGameOrder" "10"
 		"OnlyInGame" "1"
 	}
-	"5"	
-	{
-		"label" "#GameUI_GameMenu_NewGame"
-		"command" "OpenNewGameDialog"
-		"InGameOrder" "40"
-		"notmulti" "1"
-	}
+	//"5"	
+	//{
+	//	"label" "#GameUI_GameMenu_NewGame"
+	//	"command" "OpenNewGameDialog"
+	//	"InGameOrder" "40"
+	//	"notmulti" "1"
+	//}
 	"3"
 	{
-		"label" "#GameUI_GameMenu_BonusMaps"
+		"label" "SELECT MAP"
 		"command" "OpenBonusMapsDialog"
 		"InGameOrder" "50"
 		"notmulti" "1"

@@ -16,4 +16,11 @@
 	"$selfillumtint"		"[0.7 0.5 0.45]"
 
 	"$glowscale"		".25"
+
+"Proxies"
+{
+    "Blob"
+    {
+    }
+}
 }

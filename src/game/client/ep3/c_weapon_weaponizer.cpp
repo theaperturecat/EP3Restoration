@@ -221,13 +221,16 @@ void C_WeaponWeaponizer::ManageAmmoParticleEffects( void )
 		{
 			if ( !m_pTubePrimaryAmmo.IsValid() )
 			{
-				if ( GetEffectViewModel() )
+				if (GetEffectViewModel())
 				{
-					m_pTubePrimaryAmmo = GetEffectViewModel()->ParticleProp()->Create( p_szAmmoEffectName[m_iPrimaryAmmoType], PATTACH_POINT_FOLLOW, "ltube_pattach_base" );
+					//WHY ISNT THIS WORKING!?! It should be creating, but I cant see it. Replacing the particle effect with something like flamethrower works, so why not this?
+					m_pTubePrimaryAmmo = GetEffectViewModel()->ParticleProp()->Create(p_szAmmoEffectName[m_iPrimaryAmmoType], PATTACH_POINT_FOLLOW, "ltube_pattach_base");
 					if (m_pTubePrimaryAmmo)//
+					{
 						GetEffectViewModel()->ParticleProp()->AddControlPoint(m_pTubePrimaryAmmo, 1, GetEffectViewModel(), PATTACH_POINT_FOLLOW, "ltube_pattach_end");
+					}
 					else
-						Warning("m_pTubePrimaryAmmo is NULL, this probably means weaponizer is missing a particle effect!!!");
+					Warning("m_pTubePrimaryAmmo is NULL, this probably means weaponizer is missing a particle effect!!!");
 				}
 			}
 		}

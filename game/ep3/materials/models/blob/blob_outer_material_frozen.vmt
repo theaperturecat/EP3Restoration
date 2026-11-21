@@ -1,32 +1,54 @@
 "Blob"
 {
-	"$basetexture" "models/blob/blob"
-	"$normalmap" 	"models/blob/blob_normal"
-	"$specmasktexture"	"models/blob/blob_specmask"
-	"$lightwarptexture" "models/blob/blob_lightwarp"
-	"$fresnelwarptexture" "models/blob/blob_fresnelwarp"
-	"$opacitytexture"	"models/blob/blob_opacity"
+	"$basetexture" 		"models/blob/blob_surface"
+	"$normalmap" 		"models/blob/blob_surface_normal"
+	"$specmasktexture"	"models/blob/blob_surface_specmask"
+	"$lightwarptexture" 	"models/blob/blob_surface_lightwarp"
+	"$fresnelwarptexture" 	"models/blob/blob_surface_fresnelwarp"
+	"$opacitytexture"	"models/blob/blob_surface_opacity"
 
-	"$nocull"		"1"
+	"$envmap" 		"Env_cubemap"
 
-	"$diffusescale"		"1"
+	"$uvscale"		"0.015"
+	"$bumpstrength"		"1.0"
+	"fresnelbumpstrength"	"1.0"
+	"translucentfresnelmunmaxexp"	"[0.8 1.0 1.0]"
 
-	"$interior"	"1"
-	"$interiorfogstrength"	".25"
-	"$interiorbackgroundboost" "1"
-	"$interiorambientscale"		"1"
-	"$interiorbacklightscale"	".2"
-	"$interiorrefractstrength"	".05"
+	"$diffuseboost"		"1.0"
 
-	"$phongboost"		"2"
-	"$phongexponent"	"48"
-	"$rimlightboost"	"2"
-	"$rimlightexponent"	"48"
+	"$interior"			"1"
+	"$interiorfogstrength"		"0.06"
+	"$interiorfoglimit"		"0.8"
+	"$interiorfognormalboost"	"0.0"
+	"$interiorbackgroundboost" 	"1"
+	"$interiorambientscale"		"0.3"
+	"$interiorbacklightscale"	"0.3"
+	"$interiorcolor"		"[0.7 0.5 0.45]"	
+	"$interiorrefractstrength"	"0.015"
+	"$interiorrefractblur"		"0.2"
 
-//	"$contactshadows"	"1"
+	"$phongboost"		"5" // 1
+	"$phongboost2"		"7" // 1
+	"$phongexponent"	"400" // 48
+	"$phongexponent2"	"40"	// 1
+	"$rimlightboost"	"1"
+	"$rimlightexponent"	"1"
 
+	"$basecolortint"	"[0.7 0.5 0.45]"
 
-	"$envmap" "Env_cubemap"
+	//"$contactshadows"	"1"
 
 	"$surfaceprop"		"flesh"
+
+ 	"Proxies"
+	{
+		"BlobEmotionColor"
+		{
+			"resultVar" "$interiorColor"
+			"scale"	"0.5"			// scale emotion color
+		}
+    "Blob"
+    {
+    }
+ 	}
 }

@@ -1,32 +1,36 @@
 "Blob"
 {
-	"$basetexture" "models/blob/blob"
-	"$normalmap" 	"models/blob/blob_normal"
-	"$specmasktexture"	"models/blob/blob_specmask"
-	"$lightwarptexture" "models/blob/blob_lightwarp"
-	"$fresnelwarptexture" "models/blob/blob_fresnelwarp"
-	"$opacitytexture"	"models/blob/blob_opacity"
+	"$basetexture"		"models/blob/blob_inner_material"
+	"$normalmap"		"dev/flat_normal"
+	"$specmasktexture"	"models/blob/blob_surface_specmask"
+	"$lightwarptexture" 	"models/blob/blob_surface_lightwarp"
+	"$fresnelwarptexture" 	"models/blob/blob_surface_fresnelwarp"
 
-	"$nocull"		"1"
+	"$uvscale"		"0.02"
 
-	"$diffusescale"		"1"
+	"$envmap" 		"Env_cubemap"
 
-	"$interior"	"1"
-	"$interiorfogstrength"	".25"
-	"$interiorbackgroundboost" "1"
-	"$interiorambientscale"		"1"
-	"$interiorbacklightscale"	".2"
-	"$interiorrefractstrength"	".05"
+	"$pulse"		"1"
 
-	"$phongboost"		"2"
-	"$phongexponent"	"48"
-	"$rimlightboost"	"2"
-	"$rimlightexponent"	"48"
+	"$phongboost"		"1"
+	"$phongexponent"	"1"
+	"$rimlightboost"	"1"
+	"$rimlightexponent"	"1"
 
-//	"$contactshadows"	"1"
+	"$selfillumfresnel"	"1"
+	"$selfillumfresnelminmaxexp"	"[.5 1 1]"
+	"$selfillumtint"		"[0.7 0.5 0.45]"
 
+	"$glowscale"		".25"
 
-	"$envmap" "Env_cubemap"
+	"$basecolortint"	"[4.5 1.5 1.0]"
 
 	"$surfaceprop"		"flesh"
+
+"Proxies"
+{
+    "Blob"
+    {
+    }
+}
 }

@@ -15,6 +15,7 @@
 #include "tier1/utlbuffer.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <vgui/IVGui.h>
 #include "filesystem.h"
 
 #include "MouseMessageForwardingPanel.h"
@@ -22,6 +23,7 @@
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+#include <cdll_client_int.h>
 
 using namespace vgui;
 
@@ -665,4 +667,254 @@ void CBaseSaveGameDialog::OnPanelSelected()
 	SetControlEnabled( "delete", true );
 }
 
+//thanks Wonderland War for this fix
+void CBaseSaveGameDialog::PerformLayout(void)
+{
+	BaseClass::PerformLayout();
+	vgui::ivgui()->AddTickSignal(GetVPanel(), 25);
+}
 
+void CBaseSaveGameDialog::OnTick(void)
+{
+	// This is such a horrible fix, but it's the only thing that I know of that will fix it
+	m_pGameList->InvalidateLayout();
+	m_pGameList->Repaint();
+}
+
+
+static const char* g_HL2Maps[] =
+{
+	// Point Insertion
+	"d1_trainstation_01",
+	"d1_trainstation_02",
+	"d1_trainstation_03",
+	"d1_trainstation_04",
+
+	// A Red Letter Day
+	"d1_trainstation_05",
+	"d1_trainstation_06",
+
+	// Route Kanal
+	"d1_canals_01",
+	"d1_canals_01a",
+	"d1_canals_02",
+	"d1_canals_03",
+	"d1_canals_05",
+
+	// Water Hazard
+	"d1_canals_06",
+	"d1_canals_07",
+	"d1_canals_08",
+	"d1_canals_09",
+	"d1_canals_10",
+	"d1_canals_11",
+	"d1_canals_12",
+	"d1_canals_13",
+
+	// Black Mesa East
+	"d1_eli_01",
+	"d1_eli_02",
+
+	// We Don't Go to Ravenholm
+	"d1_town_01",
+	"d1_town_01a",
+	"d1_town_02",
+	"d1_town_03",
+	"d1_town_02a",
+	"d1_town_04",
+	"d1_town_05",
+
+	// Highway 17
+	"d2_coast_01",
+	"d2_coast_03",
+	"d2_coast_04",
+	"d2_coast_05",
+	"d2_coast_07",
+	"d2_coast_08",
+
+	// Sandtraps
+	"d2_coast_09",
+	"d2_coast_10",
+	"d2_coast_11",
+	"d2_coast_12",
+
+	// Nova Prospekt
+	"d2_prison_01",
+	"d2_prison_02",
+	"d2_prison_03",
+	"d2_prison_04",
+	"d2_prison_05",
+
+	// Entanglement
+	"d2_prison_06",
+	"d2_prison_07",
+	"d2_prison_08",
+	"d3_c17_01",
+
+	// Anticitizen One
+	"d3_c17_02",
+	"d3_c17_03",
+	"d3_c17_04",
+	"d3_c17_05",
+	"d3_c17_06a",
+	"d3_c17_06b",
+	"d3_c17_07",
+	"d3_c17_08",
+
+	// Follow Freeman
+	"d3_c17_09",
+	"d3_c17_10a",
+	"d3_c17_10b",
+	"d3_c17_11",
+	"d3_c17_12",
+	"d3_c17_12b",
+	"d3_c17_13",
+
+	// Our Benefactors
+	"d3_citadel_01",
+	"d3_citadel_02",
+	"d3_citadel_03",
+	"d3_citadel_04",
+	"d3_citadel_05",
+
+	// Dark Energy
+	"d3_breen_01",
+	NULL
+};
+
+static const char* g_EP1Maps[] =
+{
+	// Undue Alarm
+	"ep1_citadel_00",
+	"ep1_citadel_01",
+	"ep1_citadel_02",
+	"ep1_citadel_02b",
+
+	// Direct Intervention
+	"ep1_citadel_03",
+	"ep1_citadel_04",
+
+	// Lowlife
+	"ep1_c17_00",
+	"ep1_c17_00a",
+
+	// Urban Flight
+	"ep1_c17_01",
+	"ep1_c17_02",
+	"ep1_c17_02b",
+	"ep1_c17_02a",
+
+	// Exit 17
+	"ep1_c17_05",
+	"ep1_c17_06",
+	NULL
+};
+
+static const char* g_EP2Maps[] =
+{
+	// To the White Forest
+	"ep2_outland_01",
+	"ep2_outland_01a",
+
+	// This Vortal Coil
+	"ep2_outland_02",
+	"ep2_outland_03",
+	"ep2_outland_04",
+
+	// Freeman Pontifex
+	"ep2_outland_05",
+	"ep2_outland_06",
+
+	// Riding Shotgun
+	"ep2_outland_06a",
+	"ep2_outland_07",
+	"ep2_outland_08",
+
+	// Under the Radar
+	"ep2_outland_09",
+	"ep2_outland_10",
+	"ep2_outland_10a",
+
+	// Our Mutual Fiend
+	"ep2_outland_11",
+	"ep2_outland_11a",
+	"ep2_outland_11b",
+	"ep2_outland_12",
+
+	// T-Minus One
+	"ep2_outland_12a",
+	NULL
+};
+
+struct GameInfo
+{
+	const char* gamename;
+	const char** mapList;
+};
+
+GameInfo games[3] = 
+{
+	{"halflife2",g_HL2Maps},
+	{"ep1",g_EP1Maps},
+	{"ep2",g_EP2Maps},
+};
+
+int curGame = 0;
+const char** curMap = nullptr;
+
+
+
+CON_COMMAND(take_map_screenshot, "Take screenshot and move to next map")
+{
+
+	if (curMap == NULL)
+		curMap = games[curGame].mapList;
+
+	{
+		char szMapName[MAX_MAP_NAME];
+
+		V_FileBase(engine->GetLevelName(), szMapName, sizeof(szMapName));
+
+		if (strcmp(szMapName, *curMap) != 0)
+		{
+			bool found = false;
+			for (int i = 0; i < 3; i++)
+			{
+				const char** nextMap = games[i].mapList;
+				while (nextMap != nullptr)
+				{
+					if (strcmp(szMapName, *nextMap) == 0)
+					{
+						curMap = nextMap;
+						found = true;
+						break;
+					}
+					nextMap++;
+				}
+				if (found)
+					break;
+			}
+			if (!found)
+				return;
+		}
+	}
+
+
+
+	char buff[100];
+	sprintf(buff,"materials/vgui/bonusmaps/%s/%s.tga",games[curGame].gamename, *curMap);
+
+
+	clientdll->WriteSaveGameScreenshot(buff);//OfSize(buff, 450, 250);
+
+	if (++curMap == NULL)
+	{
+		curGame = (curGame+1) % 3;
+		curMap = games[curGame].mapList;
+	}
+
+	sprintf(buff, "map %s", *curMap);
+
+	engine->ClientCmd_Unrestricted(buff);
+	//engine->ClientCmd_Unrestricted("noclip");
+}

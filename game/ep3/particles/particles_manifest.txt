@@ -100,4 +100,5 @@ particles_manifest
 	"file"		"particles/weapon_fx.pcf"
 	"file"		"particles/weapon_fx_hl2.pcf"
 	"file"		"particles/flamethrower.pcf"
+	"file"		"particles/icegun.pcf"
 }

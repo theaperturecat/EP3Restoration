@@ -294,3 +294,109 @@
 	"volume"	"1.0"
 	"wave"		"weapons/gauss/chargeloop.wav"
 }
+
+// ------------------------------------------------------------------------------------
+// Gauss
+// ------------------------------------------------------------------------------------
+
+"Weapon_IceGun.SculptureShatter"
+{
+	"channel"		"CHAN_WEAPON"
+	"volume"		"0.7"
+	"soundlevel"		"SNDLVL_GUNFIRE"
+	"pitch"			"95,105"
+	"rndwave"
+	{
+		"wave"		"physics/glass/glass_cup_break1.wav"
+		"wave"		"physics/glass/glass_cup_break2.wav"
+	}
+
+}
+
+"Weapon_IceGun.CryoDartHitBody"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		"0.7"
+	"pitch"			"93,108"
+	"soundlevel"		"SNDLVL_80db"
+
+	"rndwave"
+	{
+		"wave"		"npc/ministrider/flechette_flesh_impact1.wav"
+		"wave"		"npc/ministrider/flechette_flesh_impact2.wav"
+		"wave"		"npc/ministrider/flechette_flesh_impact3.wav"
+		"wave"		"npc/ministrider/flechette_flesh_impact4.wav"
+	}
+}
+
+"Weapon_IceGun.CryoDartHitWorld"
+{
+	"channel"		"CHAN_STATIC"
+	"volume"		".95,1.0"
+	"pitch"			"110,130"
+	"soundlevel"		"SNDLVL_80db"
+
+	"rndwave"
+	{
+		"wave"		"npc/ministrider/flechette_impact_stick1.wav"
+		"wave"		"npc/ministrider/flechette_impact_stick2.wav"
+		"wave"		"npc/ministrider/flechette_impact_stick3.wav"
+		"wave"		"npc/ministrider/flechette_impact_stick4.wav"
+		"wave"		"npc/ministrider/flechette_impact_stick5.wav"
+	}
+}
+
+"Weapon_IceGun.CryoDartNearMiss"
+{
+	"channel"		"CHAN_BODY"
+	"volume"		"1.0"
+	"soundlevel"	"SNDLVL_120dB"
+	"pitch"			"PITCH_NORM"
+
+	"rndwave"
+	{
+		"wave"	">npc/ministrider/flechetteLtoR01.wav"
+		"wave"	">npc/ministrider/flechetteLtoR02.wav"
+		"wave"	">npc/ministrider/flechetteLtoR03.wav"
+		"wave"	">npc/ministrider/flechetteLtoR04.wav"
+	}
+}
+
+"Weapon_IceGun.CryoDartShoot"
+{
+	"channel"	"CHAN_STATIC"
+	"volume"	"1.0"
+	"soundlevel"	"SNDLVL_130dB"
+	"pitch"	"98,104"
+	"rndwave"
+	{
+		"wave"	"^npc/ministrider/ministrider_fire1.wav"	
+	}
+}
+
+"Weapon_IceGun.Deactivate"
+{
+	"channel"		"CHAN_WEAPON"
+	"volume"		"0.7"
+	"soundlevel"		"SNDLVL_GUNFIRE"
+	"pitch"			"95,105"
+	"wave"			"weapons/physgun_off.wav"
+}
+
+"Weapon_IceGun.Active"
+{
+	"channel"		"CHAN_WEAPON"
+	"volume"		"0.7"
+	"soundlevel"		"SNDLVL_GUNFIRE"
+	"pitch"			"95,105"
+	"wave"			"weapons/physcannon/physcannon_pickup.wav"
+}
+
+"Weapon_IceGun.IceLoop"
+{
+	"channel"		"CHAN_WEAPON"
+	"volume"		"0.7"
+	"soundlevel"		"SNDLVL_GUNFIRE"
+	"pitch"			"95,105"
+	"wave"			"weapons/physcannon/hold_loop.wav"
+}

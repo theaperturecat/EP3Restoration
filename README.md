@@ -67,4 +67,5 @@ Report bugs on this github repo under issues, or add them in the discord.
 * OddDoc - Physics parameter file (that was a pain to work out, good thing he remade it) and blob materials
 * Steryo Yamada - Tutorial map and title fixes
 * Infecation - Explained mat_queue_mode 0 can fix a crash with the blob.
+* Ibbles - icegun particles and flamethrower sounds
 * All the other people who made maps (check the menu)
